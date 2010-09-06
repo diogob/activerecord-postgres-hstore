@@ -1,6 +1,6 @@
-= activerecord-postgres-hstore
+= Goodbye serialize, hello hstore.
 
-Description goes here.
+Soon...
 
 == Note on Patches/Pull Requests
  
