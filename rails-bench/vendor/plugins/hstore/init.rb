@@ -1,0 +1,2 @@
+require 'activerecord-postgres-hstore'
+
