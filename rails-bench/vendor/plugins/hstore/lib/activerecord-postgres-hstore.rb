@@ -43,7 +43,10 @@ module ActiveRecord
         if value.kind_of?(NilClass)
           return "default"
         elsif column && column.sql_type =~ /^hstore$/
-          raise HstoreTypeMismatch, "#{column.name} must have a Hash value" unless value.kind_of?(Hash)
+          unless value.kind_of?(Hash)
+            raise "#{value} -- #{value.class}"
+            raise HstoreTypeMismatch, "#{column.name} must have a Hash value"
+          end
           return value.to_hstore
         end
         old_quote(value,column)
