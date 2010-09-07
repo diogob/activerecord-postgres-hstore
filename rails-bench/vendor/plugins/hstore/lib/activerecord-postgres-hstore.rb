@@ -19,8 +19,6 @@ class String
   end
 end
 
-raise defined?(ActiveRecord::ConnectionAdapters::Column).to_s
-
 module ActiveRecord
   class HstoreTypeMismatch < ActiveRecord::ActiveRecordError
   end
