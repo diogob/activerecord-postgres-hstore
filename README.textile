@@ -90,6 +90,10 @@ Person.where("data -> 'foo' ILIKE '%bar%'")
 
 Have fun.
 
+.h2 Help
+
+You can use issues in github for that. Or else you can reach me at twitter: @joaomilho
+
 .h2 Note on Patches/Pull Requests
  
 * Fork the project.
