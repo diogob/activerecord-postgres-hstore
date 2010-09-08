@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{activerecord-postgres-hstore}
-  s.version = "0.0.0"
+  s.version = "0.0.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Juan Maiz"]
@@ -14,13 +14,12 @@ Gem::Specification.new do |s|
   s.email = %q{juanmaiz@gmail.com}
   s.extra_rdoc_files = [
     "LICENSE",
-     "README.rdoc"
+     "README.textile"
   ]
   s.files = [
     ".document",
      ".gitignore",
      "LICENSE",
-     "README.rdoc",
      "Rakefile",
      "VERSION",
      "lib/activerecord-postgres-hstore.rb",
@@ -28,23 +27,24 @@ Gem::Specification.new do |s|
      "lib/activerecord-postgres-hstore/hash.rb",
      "lib/activerecord-postgres-hstore/hstore.rb",
      "lib/activerecord-postgres-hstore/string.rb",
+     "lib/templates/setup_hstore.rb",
      "spec/activerecord-postgres-hstore_spec.rb"
   ]
   s.homepage = %q{http://github.com/softa/activerecord-postgres-hstore}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.7}
+  s.rubygems_version = %q{1.3.6}
   s.summary = %q{Goodbye serialize, hello hstore}
   s.test_files = [
-    "spec/activerecord-postgres-hstore_spec.rb",
-     "spec/spec_helper.rb"
+    "spec/spec_helper.rb",
+     "spec/activerecord-postgres-hstore_spec.rb"
   ]
 
   if s.respond_to? :specification_version then
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
     s.specification_version = 3
 
-    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
+    if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
       s.add_development_dependency(%q<rspec>, [">= 1.2.9"])
     else
       s.add_dependency(%q<rspec>, [">= 1.2.9"])
