@@ -1,0 +1,2 @@
+class Hstore < Hash
+end

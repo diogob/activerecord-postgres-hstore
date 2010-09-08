@@ -1,5 +1,7 @@
 = Goodbye serialize, hello hstore.
 
+<img src="https://spreadsheets.google.com/oimg?key=0AoQcKrACYfGjdGRVV3cyTDZYQkJMa255VkxxQW9LTHc&oid=1&zx=q6qvqj-ee4my6" />
+
 Soon...
 
 == Note on Patches/Pull Requests
