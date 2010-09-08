@@ -14,26 +14,3 @@ describe "ActiverecordPostgresHstore" do
   end
   
 end
-
-=begin
-
-  #---
-
-  test "should create contact" do
-    assert Contact.make :dynamic_values => {:a => 1, :b => 2}
-  end
-
-  test "should raise HstoreTypeMismatch" do
-    assert_raises ActiveRecord::HstoreTypeMismatch do
-      assert Contact.make :dynamic_values => "bug"
-    end
-  end
-
-  test "should read values from contact" do
-    contact = Contact.make :dynamic_values => {:a => 1, :b => "Lorem ipsum", 'other stuff' => "'''a'''"}
-    assert_equal({'a' => '1', 'b' => 'Lorem ipsum', 'other stuff' => "'''a'''"}, Contact.find(contact.id).dynamic_values)
-  end
-
-end
-
-=end

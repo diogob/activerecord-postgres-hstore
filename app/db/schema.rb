@@ -11,14 +11,5 @@
 # It's strongly recommended to check this file into your version control system.
 
 ActiveRecord::Schema.define(:version => 20100906191506) do
-
-# Could not dump table "bars" because of following StandardError
-#   Unknown type 'hstore' for column 'data'
-
-  create_table "foos", :force => true do |t|
-    t.text     "data"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
+  execute File.read("#{Rails.root}/db/development_structure.sql")
 end
