@@ -116,7 +116,11 @@ or...
 
 And finally, if you need to delete keys in many rows, you can:
 
+@Person.delete_key(:data, :foo)@
 
+and with many keys:
+
+@Person.delete_keys(:data, :foo, :bar)@
 
 Have fun.
 
