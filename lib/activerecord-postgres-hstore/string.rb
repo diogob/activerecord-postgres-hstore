@@ -5,6 +5,7 @@ class String
   end
 
   def valid_hstore?
+    return true if empty? || self == "''"
     # This is what comes from the database
     dbl_quotes_re = /"([^"]+)"=>"([^"]+)"/
     # TODO

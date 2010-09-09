@@ -1,6 +1,51 @@
 # ActiveRecord::ConnectionAdapters::PostgreSQLColumn.new('data','','hstore').type
 module ActiveRecord
   class Base
+    def self.delete_key attribute, key
+      #UPDATE tab SET h = delete(h, 'k1');
+      unless column_names.include?(attribute.to_s)
+        raise "invalid attribute #{attribute}"
+      end
+      update_all(["#{attribute} = delete(#{attribute},?)",key])
+    end
+    def self.delete_keys attribute, *keys
+      unless column_names.include?(attribute.to_s)
+        raise "invalid attribute #{attribute}"
+      end
+      delete_str = "delete(#{attribute},?)"
+      (keys.count-1).times do
+        delete_str = "delete(#{delete_str},?)"
+      end
+      update_all(["#{attribute} = #{delete_str}", *keys])
+    end
+    
+    def destroy_key attribute, key
+      unless self.class.column_names.include?(attribute.to_s)
+        raise "invalid attribute #{attribute}"
+      end
+      new_value = send(attribute)
+      new_value.delete(key.to_s)
+      send("#{attribute}=", new_value)
+      self
+    end
+    def destroy_key! attribute, key
+      destroy_key(attribute, key).save
+    end
+    def destroy_keys attribute, *keys
+      for key in keys
+        new_value = send(attribute)
+        new_value.delete(key.to_s)
+        send("#{attribute}=", new_value)
+      end
+      self
+    end
+    def destroy_keys! attribute, *keys
+      unless self.class.column_names.include?(attribute.to_s)
+        raise "invalid attribute #{attribute}"
+      end
+      destroy_keys(attribute, *keys).save
+    end
+
     # For Rails 3 compat :D
     #alias :old_arel_attributes_values :arel_attributes_values
     def arel_attributes_values(include_primary_key = true, include_readonly_attributes = true, attribute_names = @attributes.keys)

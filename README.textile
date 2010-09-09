@@ -18,7 +18,7 @@ You need dynamic columns in your tables. What do you do?
 |count all with negative condition|18722,149|1677,948|SELECT count(*) FROM foos WHERE data !~ 'another key: 9999990';|SELECT count(*) FROM bars WHERE not data @> '"another key"=>9999990';|
 |find one with condition|17740,307|130,227|SELECT count(*) FROM foos WHERE data ~ 'another key: 9999990';|SELECT * FROM bars WHERE data @> '"another key"=>9999990'|
 
-Benchmarks made in my local machine, time in milliseconds.
+Benchmarks made in my local machine, with a million records. Time is in milliseconds.
 
 h2. Requirements
 
@@ -34,7 +34,7 @@ h2. Install
 
 Hstore is a postgres contrib type. Check it out first:
 
-http://www.postgresql.org/docs/8.4/static/hstore.html
+"http://www.postgresql.org/docs/8.4/static/hstore.html":http://www.postgresql.org/docs/8.4/static/hstore.html
 
 Then, just add this to your Gemfile:
 
@@ -93,6 +93,30 @@ Find records where 'foo' is like 'bar':
 @Person.where("data -> 'foo' LIKE '%bar%'")@
 or something like ...
 @Person.where("data -> 'foo' ILIKE '%bar%'")@
+
+If you need to delete a key in a record, you can do it that way:
+
+@person.destroy_key(:data, :foo)@
+
+This way you'll also save the record:
+
+@person.destroy_key!(:data, :foo)@
+
+The destroy_key method returns 'self', so you can chain it:
+
+@person.destroy_key(:data, :foo).destroy_key(:data, :bar).save@
+
+But there it a shortcut for that:
+
+@person.destroy_keys(:data, :foo, :bar)@
+
+or...
+
+@person.destroy_keys!(:data, :foo, :bar)@
+
+And finally, if you need to delete keys in many rows, you can:
+
+
 
 Have fun.
 
