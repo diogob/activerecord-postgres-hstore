@@ -1,4 +1,4 @@
-.h2 Goodbye serialize, hello hstore.
+h2. Goodbye serialize, hello hstore.
 
 You need dynamic columns in your tables. What do you do?
 
@@ -20,11 +20,17 @@ You need dynamic columns in your tables. What do you do?
 
 Benchmarks made in my local machine, time in milliseconds.
 
-.h2 Requirements
+h2. Requirements
 
 Postgresql 8.4 with contrib and Rails 3. (It might work on 2.3.x with minor patches...)
 
-.h2 Install
+In Ubuntu, this is easy:
+
+@sudo apt-get install postgresql-8.4 postgresql-contrib-8.4@
+
+In Mac ...you are screwed. Use a VM.
+
+h2. Install
 
 Hstore is a postgres contrib type. Check it out first:
 
@@ -32,69 +38,69 @@ http://www.postgresql.org/docs/8.4/static/hstore.html
 
 Then, just add this to your Gemfile:
 
-gem 'activerecord-postgres-hstore'
+@gem 'activerecord-postgres-hstore'@
 
 And run your bundler:
 
-bundle install
+@bundle install@
 
 Now you need to create a migration that adds hstore support for your postgresql database:
 
-rails g railtie:hstore
+@rails g railtie:hstore@
 
 Run it:
 
-rake db:migrate
+@rake db:migrate@
 
 Finally you can create your own tables using hstore type. It's easy:
 
-rails g model Person name:string data:hstore
+@rails g model Person name:string data:hstore@
 
 You're done.
 
 Well, not yet. Don't forget to add indexes. Like this:
 
-CREATE INDEX people_gist_data ON people USING GIST(data);
--- or
-CREATE INDEX people_gin_data ON people USING GIN(data);
+@CREATE INDEX people_gist_data ON people USING GIST(data);@
+or
+@CREATE INDEX people_gin_data ON people USING GIN(data);@
 
 To my experience GIN is faster for searching records.
 
-.h2 Usage
+h2. Usage
 
 Once you have it installed, you just need to learn a little bit of new sqls for selecting stuff (creting and updating is transparent).
 
 Find records that contains a key named 'foo':
 
-Person.where("data ? 'foo'")
+@Person.where("data ? 'foo'")@
 
 Find records where 'foo' is equal to 'bar':
 
-Person.where("data -> 'foo' = 'bar'")
+@Person.where("data -> 'foo' = 'bar'")@
 
 This same sql is at least twice as fast (using indexes) if you do it that way:
 
-Person.where("data @> 'foo=>bar'")
+@Person.where("data @> 'foo=>bar'")@
 
 Find records where 'foo' is not equal to 'bar':
 
-Person.where("data -> 'foo' <> 'bar'")
-# or
-Person.where("not data @> 'foo=>bar'")
+@Person.where("data -> 'foo' <> 'bar'")@
+or
+@Person.where("not data @> 'foo=>bar'")@
 
 Find records where 'foo' is like 'bar':
 
-Person.where("data -> 'foo' LIKE '%bar%'")
-# or something like ...
-Person.where("data -> 'foo' ILIKE '%bar%'")
+@Person.where("data -> 'foo' LIKE '%bar%'")@
+or something like ...
+@Person.where("data -> 'foo' ILIKE '%bar%'")@
 
 Have fun.
 
-.h2 Help
+h2. Help
 
 You can use issues in github for that. Or else you can reach me at twitter: @joaomilho
 
-.h2 Note on Patches/Pull Requests
+h2. Note on Patches/Pull Requests
  
 * Fork the project.
 * Make your feature addition or bug fix.
@@ -104,6 +110,6 @@ You can use issues in github for that. Or else you can reach me at twitter: @joa
   (if you want to have your own version, that is fine but bump version in a commit by itself I can ignore when I pull)
 * Send me a pull request. Bonus points for topic branches.
 
-.h2 Copyright
+h2. Copyright
 
 Copyright (c) 2010 Juan Maiz. See LICENSE for details.
