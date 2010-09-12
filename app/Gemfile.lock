@@ -24,7 +24,7 @@ GEM
       activesupport (= 3.0.0)
       arel (~> 1.0.0)
       tzinfo (~> 0.3.23)
-    activerecord-postgres-hstore (0.0.1)
+    activerecord-postgres-hstore (0.0.2)
     activeresource (3.0.0)
       activemodel (= 3.0.0)
       activesupport (= 3.0.0)
@@ -70,6 +70,6 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  activerecord-postgres-hstore (= 0.0.1)
+  activerecord-postgres-hstore (= 0.0.2)
   pg
   rails (= 3.0.0)

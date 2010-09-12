@@ -1,36 +1,51 @@
-# ActiveRecord::ConnectionAdapters::PostgreSQLColumn.new('data','','hstore').type
+# Extends AR to add Hstore functionality.
 module ActiveRecord
+  # Adds methods for deleting keys in your hstore columns
   class Base
+    # Deletes all keys from a specific column in a model. E.g.
+    #   Person.delete_key(:info, :father)
+    # The SQL generated will be:
+    #   UPDATE "people" SET "info" = delete("info",'father');
     def self.delete_key attribute, key
-      #UPDATE tab SET h = delete(h, 'k1');
-      unless column_names.include?(attribute.to_s)
-        raise "invalid attribute #{attribute}"
-      end
-      update_all(["#{attribute} = delete(#{attribute},?)",key])
+      raise "invalid attribute #{attribute}" unless column_names.include?(attribute.to_s)
+      update_all([%(#{attribute} = delete("#{attribute}",?)),key])
     end
+    
+    # Deletes many keys from a specific column in a model. E.g.
+    #   Person.delete_key(:info, :father, :mother)
+    # The SQL generated will be:
+    #   UPDATE "people" SET "info" = delete(delete("info",'father'),'mother');
     def self.delete_keys attribute, *keys
-      unless column_names.include?(attribute.to_s)
-        raise "invalid attribute #{attribute}"
-      end
+      raise "invalid attribute #{attribute}" unless column_names.include?(attribute.to_s)
       delete_str = "delete(#{attribute},?)"
-      (keys.count-1).times do
-        delete_str = "delete(#{delete_str},?)"
-      end
+      (keys.count-1).times{ delete_str = "delete(#{delete_str},?)" }
       update_all(["#{attribute} = #{delete_str}", *keys])
     end
     
+    # Deletes a key in a record. E.g.
+    #   witt = Person.find_by_name("Ludwig Wittgenstein")
+    #   witt.destroy_key(:info, :father)
+    # This does not save the record, so you'll have to do it.
     def destroy_key attribute, key
-      unless self.class.column_names.include?(attribute.to_s)
-        raise "invalid attribute #{attribute}"
-      end
+      raise "invalid attribute #{attribute}" unless self.class.column_names.include?(attribute.to_s)
       new_value = send(attribute)
       new_value.delete(key.to_s)
       send("#{attribute}=", new_value)
       self
     end
+    
+    # Deletes a key in a record. E.g.
+    #   witt = Person.find_by_name("Ludwig Wittgenstein")
+    #   witt.destroy_key(:info, :father)
+    # This does save the record.
     def destroy_key! attribute, key
       destroy_key(attribute, key).save
     end
+
+    # Deletes many keys in a record. E.g.
+    #   witt = Person.find_by_name("Ludwig Wittgenstein")
+    #   witt.destroy_keys(:info, :father, :mother)
+    # This does not save the record, so you'll have to do it.
     def destroy_keys attribute, *keys
       for key in keys
         new_value = send(attribute)
@@ -39,6 +54,11 @@ module ActiveRecord
       end
       self
     end
+
+    # Deletes many keys in a record. E.g.
+    #   witt = Person.find_by_name("Ludwig Wittgenstein")
+    #   witt.destroy_keys!(:info, :father, :mother)
+    # This does save the record.
     def destroy_keys! attribute, *keys
       unless self.class.column_names.include?(attribute.to_s)
         raise "invalid attribute #{attribute}"
@@ -86,15 +106,11 @@ module ActiveRecord
     class PostgreSQLColumn < Column
       alias :old_type_cast_code :type_cast_code
       alias :old_simplified_type :simplified_type
-      alias :old_klass :klass
       def type_cast_code(var_name)
         type == :hstore ? "#{var_name}.from_hstore" : old_type_cast_code(var_name)
       end
       def simplified_type(field_type)
         field_type =~ /^hstore$/ ? :hstore : old_simplified_type(field_type)
-      end
-      def klass
-        type == :hstore ? Hstore : old_klass   
       end
     end
     class PostgreSQLAdapter < AbstractAdapter
