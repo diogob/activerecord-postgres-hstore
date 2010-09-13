@@ -46,7 +46,7 @@ And run your bundler:
 
 Now you need to create a migration that adds hstore support for your postgresql database:
 
-@rails g railtie:hstore@
+@rails g hstore:setup@
 
 Run it:
 
@@ -55,6 +55,7 @@ Run it:
 Finally you can create your own tables using hstore type. It's easy:
 
 @rails g model Person name:string data:hstore@
+@rake db:migrate@
 
 You're done.
 
