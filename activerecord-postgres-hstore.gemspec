@@ -25,7 +25,6 @@ Gem::Specification.new do |s|
      "lib/activerecord-postgres-hstore.rb",
      "lib/activerecord-postgres-hstore/activerecord.rb",
      "lib/activerecord-postgres-hstore/hash.rb",
-     "lib/activerecord-postgres-hstore/hstore.rb",
      "lib/activerecord-postgres-hstore/string.rb",
      "lib/templates/setup_hstore.rb",
      "spec/activerecord-postgres-hstore_spec.rb"

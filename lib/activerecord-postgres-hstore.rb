@@ -6,7 +6,7 @@ require 'rails/generators/migration'
 #
 # Creates a new railtie for 2 reasons:
 #
-# * Initialize ActireRecord properly
+# * Initialize ActiveRecord properly
 # * Add hstore:setup generator 
 class Hstore < Rails::Railtie
 
