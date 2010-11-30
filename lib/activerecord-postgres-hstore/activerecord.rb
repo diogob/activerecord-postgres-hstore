@@ -137,6 +137,11 @@ module ActiveRecord
 
       alias :old_quote :quote
       alias :old_columns :columns
+      alias :old_native_database_types :native_database_types
+    
+      def native_database_types
+        old_native_database_types.merge({:hstore => { :name => "hstore" }})
+      end
 
       # Quotes correctly a hstore column value.
       def quote(value, column = nil)
