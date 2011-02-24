@@ -32,7 +32,7 @@ class BarTest < ActiveSupport::TestCase
     assert_equal 10, Bar.where("data -> 'a' ILIKE '%VALUE%'").count
   end
 
-  test "should delete" do
+  test "should delete with workaround" do
     bar = Bar.create :data => {:a => 1, :b => 2, :c => 3}
     bar.reload
     assert_equal({"a"=>"1", "b"=>"2", "c"=>"3"}, bar.data)
@@ -42,5 +42,92 @@ class BarTest < ActiveSupport::TestCase
     bar.save
     bar.reload
     assert_equal({"b"=>"2", "c"=>"3"}, bar.data)
+  end
+  
+  test "should delete in a cool way" do
+    bar = Bar.create :data => {:a => 1, :b => 2, :c => 3}
+    bar.reload
+    assert_equal({"a"=>"1", "b"=>"2", "c"=>"3"}, bar.data)
+    bar.destroy_key(:data, :a)
+    bar.save
+    bar.reload
+    assert_equal({"b"=>"2", "c"=>"3"}, bar.data)
+  end
+
+  test "should delete in a cool way - bang version" do
+    bar = Bar.create :data => {:a => 1, :b => 2, :c => 3}
+    bar.reload
+    assert_equal({"a"=>"1", "b"=>"2", "c"=>"3"}, bar.data)
+    assert bar.destroy_key!(:data, :a)
+    bar.reload
+    assert_equal({"b"=>"2", "c"=>"3"}, bar.data)
+  end
+  
+  test "should delete many keys" do
+    bar = Bar.create :data => {:a => 1, :b => 2, :c => 3}
+    bar.reload
+    assert_equal({"a"=>"1", "b"=>"2", "c"=>"3"}, bar.data)
+    bar.destroy_keys(:data, :a, :b)
+    bar.save
+    bar.reload
+    assert_equal({"c"=>"3"}, bar.data)
+  end
+
+  test "should delete many keys - bang version" do
+    bar = Bar.create :data => {:a => 1, :b => 2, :c => 3}
+    bar.reload
+    assert_equal({"a"=>"1", "b"=>"2", "c"=>"3"}, bar.data)
+    assert bar.destroy_keys!(:data, :a, :b)
+    bar.reload
+    assert_equal({"c"=>"3"}, bar.data)
+  end
+  
+  test "should delete using method chaining" do
+    bar = Bar.create :data => {:a => 1, :b => 2, :c => 3}
+    bar.reload
+    assert_equal({"a"=>"1", "b"=>"2", "c"=>"3"}, bar.data)
+    bar.destroy_key(:data, :a).destroy_key(:data, :b).destroy_key(:data, :c).save
+    bar.reload
+    assert_equal({}, bar.data)
+  end
+
+  test "should delete from the model" do
+    bars = Array.new(5){ Bar.create :data => {:a => 1, :b => 2, :c => 3} }
+    bars.map(&:reload)
+    for bar in bars
+      assert_equal({"a"=>"1", "b"=>"2", "c"=>"3"}, bar.data)
+    end
+    Bar.delete_key(:data, :a)
+    bars.map(&:reload)
+    for bar in bars
+      assert_equal({"b"=>"2", "c"=>"3"}, bar.data)
+    end
+  end
+
+  test "should delete many keys from the model" do
+    bars = Array.new(5){ Bar.create :data => {:a => 1, :b => 2, :c => 3} }
+    bars.map(&:reload)
+    for bar in bars
+      assert_equal({"a"=>"1", "b"=>"2", "c"=>"3"}, bar.data)
+    end
+    Bar.delete_keys(:data, :a, :b)
+    bars.map(&:reload)
+    for bar in bars
+      assert_equal({"c"=>"3"}, bar.data)
+    end
+  end
+
+  test "should explode if there is not column trying to delete from the record" do
+    bar = Bar.create :data => {:a => 1, :b => 2, :c => 3}
+    assert_raise RuntimeError do
+      bar.destroy_key(:foo, :a)
+    end
+  end
+
+
+  test "should explode if there is not column trying to delete from the model" do
+    assert_raise RuntimeError do
+      Bar.delete_key(:foo, :a)
+    end
   end
 end

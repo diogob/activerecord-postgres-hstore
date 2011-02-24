@@ -1,17 +1,29 @@
-#raise ActiveRecord::ConnectionAdapters::Column.inspect
 require 'rails'
 require 'rails/generators'
 require 'rails/generators/migration'
-class Railtie < Rails::Railtie
+
+# = Hstore Railtie
+#
+# Creates a new railtie for 2 reasons:
+#
+# * Initialize ActiveRecord properly
+# * Add hstore:setup generator 
+class Hstore < Rails::Railtie
+
   initializer 'activerecord-postgres-hstore' do
     ActiveSupport.on_load :active_record do
       require "activerecord-postgres-hstore/activerecord"
     end
   end
-  #rake_tasks do
-  #  load "lib/tasks/hstore.rake"
-  #end
-  class HstoreGenerator < Rails::Generators::Base
+
+  # Creates the hstore:setup generator. This generator creates a migration that
+  # adds hstore support for your database. If fact, it's just the sql from the
+  # contrib inside a migration. But it' s handy, isn't it?
+  #
+  # To use your generator, simply run it in your project:
+  #
+  #   rails g hstore:setup
+  class Setup < Rails::Generators::Base
     include Rails::Generators::Migration
 
     def self.source_root
@@ -32,11 +44,5 @@ class Railtie < Rails::Railtie
 
   end
 end
-
-
-
-
-
-require "activerecord-postgres-hstore/hstore"
 require "activerecord-postgres-hstore/string"
 require "activerecord-postgres-hstore/hash"
