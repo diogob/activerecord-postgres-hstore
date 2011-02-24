@@ -33,18 +33,18 @@ Gem::Specification.new do |s|
   s.homepage = %q{http://github.com/softa/activerecord-postgres-hstore}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.6}
+  s.rubygems_version = %q{1.3.7}
   s.summary = %q{Goodbye serialize, hello hstore}
   s.test_files = [
-    "spec/spec_helper.rb",
-     "spec/activerecord-postgres-hstore_spec.rb"
+    "spec/activerecord-postgres-hstore_spec.rb",
+     "spec/spec_helper.rb"
   ]
 
   if s.respond_to? :specification_version then
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
     s.specification_version = 3
 
-    if Gem::Version.new(Gem::RubyGemsVersion) >= Gem::Version.new('1.2.0') then
+    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_development_dependency(%q<rspec>, [">= 1.2.9"])
     else
       s.add_dependency(%q<rspec>, [">= 1.2.9"])
