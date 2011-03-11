@@ -22,19 +22,19 @@ Benchmarks made in my local machine, with a million records. Time is in millisec
 
 h2. Requirements
 
-Postgresql 8.4 with contrib and Rails 3. (It might work on 2.3.x with minor patches...)
+Postgresql 8.4+ (also tested with 9.0) with contrib and Rails 3. (It might work on 2.3.x with minor patches...)
 
-In Ubuntu, this is easy:
+On Ubuntu, this is easy:
 
-@sudo apt-get install postgresql-8.4 postgresql-contrib-8.4@
+@sudo apt-get install postgresql-contrib-9.0@
 
-In Mac ...you are screwed. Use a VM.
+On Mac <del>...you are screwed. Use a VM.</del> you should use "the binary package kindly provided by EnterpriseDB":http://www.enterprisedb.com/products-services-training/pgdownload#osx
 
 h2. Install
 
 Hstore is a postgres contrib type. Check it out first:
 
-"http://www.postgresql.org/docs/8.4/static/hstore.html":http://www.postgresql.org/docs/8.4/static/hstore.html
+"http://www.postgresql.org/docs/9.0/static/hstore.html":http://www.postgresql.org/docs/9.0/static/hstore.html
 
 Then, just add this to your Gemfile:
 
