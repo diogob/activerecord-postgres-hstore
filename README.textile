@@ -44,6 +44,21 @@ And run your bundler:
 
 @bundle install@
 
+Make sure that you have the desired database, if not create it as the desired user:
+
+@createdb hstorage_dev@
+
+Add the parameters to your database.yml (these are system dependant), e.g.:
+
+bc. development:
+  adapter: postgresql
+  host: 127.0.0.1
+  database: hstorage_dev
+  encoding: unicode
+  username: postgres
+  password: 
+  pool: 5
+
 Now you need to create a migration that adds hstore support for your postgresql database:
 
 @rails g hstore:setup@
