@@ -10,7 +10,7 @@ begin
     gem.email = "juanmaiz@gmail.com"
     gem.homepage = "http://github.com/softa/activerecord-postgres-hstore"
     gem.authors = ["Juan Maiz"]
-    gem.add_development_dependency "rspec", ">= 1.2.9"
+    gem.add_development_dependency "rspec", ">= 2.0.0"
     gem.files = FileList['.document', '.gitignore', 'LICENSE', 'README.rdoc', 'Rakefile', 'VERSION', 'spec/**/*_spec.rb', 'lib/**/*.rb'].to_a
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
@@ -19,17 +19,18 @@ rescue LoadError
   puts "Jeweler (or a dependency) not available. Install it with: gem install jeweler"
 end
 
-require 'spec/rake/spectask'
-Spec::Rake::SpecTask.new(:spec) do |spec|
-  spec.libs << 'lib' << 'spec'
-  spec.spec_files = FileList['spec/**/*_spec.rb']
+
+require 'rspec/core/rake_task'
+RSpec::Core::RakeTask.new do |t|
+  t.rspec_opts = ["-r ./spec/spec_helper.rb"]
+  t.pattern = 'spec/**/*_spec.rb'
 end
 
-Spec::Rake::SpecTask.new(:rcov) do |spec|
-  spec.libs << 'lib' << 'spec'
-  spec.pattern = 'spec/**/*_spec.rb'
-  spec.rcov = true
-end
+# not sure about rcov task...
+# RSpec::Core::RakeTask.new("rcov") do |t|
+#   t.rcov = true
+# end
+
 
 task :spec => :check_dependencies
 task :default => :spec
