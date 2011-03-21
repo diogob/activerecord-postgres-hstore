@@ -84,7 +84,7 @@ To my experience GIN is faster for searching records.
 
 h2. Usage
 
-Once you have it installed, you just need to learn a little bit of new sqls for selecting stuff (creting and updating is transparent).
+Once you have it installed, you just need to learn a little bit of new sqls for selecting stuff (creating and updating is transparent).
 
 Find records that contains a key named 'foo':
 
