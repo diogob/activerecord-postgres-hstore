@@ -147,7 +147,7 @@ module ActiveRecord
       def quote(value, column = nil)
         if value && column && column.sql_type =~ /^hstore$/
           raise HstoreTypeMismatch, "#{column.name} must have a Hash or a valid hstore value (#{value})" unless value.kind_of?(Hash) || value.valid_hstore?          
-          return value.to_hstore
+          return "'#{value.to_hstore}'"
         end
         old_quote(value,column)
       end
