@@ -5,7 +5,7 @@ class Hash
   def to_hstore
     return "''" if empty?
     #@todo DIOGO! Check security issues with this quoting pleaz
-    map{|idx,val| "('#{idx}'=>'#{val.to_s.gsub(/'/,"''")}')"  }.join(' || ')
+    map{|idx, val| "('#{idx.to_s.escape_quotes}'=>'#{val.to_s.escape_quotes}')"  }.join(' || ')
   end
 
   # If the method from_hstore is called in a Hash, it just returns self.
