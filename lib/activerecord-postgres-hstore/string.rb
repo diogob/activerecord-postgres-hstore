@@ -28,4 +28,8 @@ class String
     Hash[ scan(/"([^"]+)"=>"([^"]+)"/) ]
   end
 
+  def escape_quotes
+    self.gsub(/'/,"''")
+  end
+
 end
