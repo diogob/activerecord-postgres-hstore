@@ -135,15 +135,14 @@ module ActiveRecord
 
     class PostgreSQLAdapter < AbstractAdapter
 
+      alias :old_quote :quote
       alias :old_columns :columns
       alias :old_native_database_types :native_database_types
 
-      # Depend on type_cast, not quote, in AR >= 3.1
+      # Depend on type_cast in AR >= 3.1
       if ActiveRecord::VERSION::MAJOR >= 3 && ActiveRecord::VERSION::MINOR >= 1
         alias :old_type_cast :type_cast
       else
-        alias :old_quote :quote
-      end
     
       def native_database_types
         old_native_database_types.merge({:hstore => { :name => "hstore" }})
