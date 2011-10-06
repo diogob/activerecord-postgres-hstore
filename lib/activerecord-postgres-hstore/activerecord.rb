@@ -142,7 +142,7 @@ module ActiveRecord
       # Depend on type_cast in AR >= 3.1
       if ActiveRecord::VERSION::MAJOR >= 3 && ActiveRecord::VERSION::MINOR >= 1
         alias :old_type_cast :type_cast
-      else
+      end
     
       def native_database_types
         old_native_database_types.merge({:hstore => { :name => "hstore" }})
