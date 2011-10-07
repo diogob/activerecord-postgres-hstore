@@ -138,6 +138,11 @@ module ActiveRecord
       alias :old_quote :quote
       alias :old_columns :columns
       alias :old_native_database_types :native_database_types
+
+      # Depend on type_cast in AR >= 3.1
+      if ActiveRecord::VERSION::MAJOR >= 3 && ActiveRecord::VERSION::MINOR >= 1
+        alias :old_type_cast :type_cast
+      end
     
       def native_database_types
         old_native_database_types.merge({:hstore => { :name => "hstore" }})
@@ -145,11 +150,20 @@ module ActiveRecord
 
       # Quotes correctly a hstore column value.
       def quote(value, column = nil)
+        format_hstore(value, column) || old_quote(value,column)
+      end
+      
+      def type_cast(value, column)
+        format_hstore(value, column) || old_type_cast(value, column)
+      end
+      
+      def format_hstore(value, column)
         if value && column && column.sql_type =~ /^hstore$/
           raise HstoreTypeMismatch, "#{column.name} must have a Hash or a valid hstore value (#{value})" unless value.kind_of?(Hash) || value.valid_hstore?          
-          return value.to_hstore
+          value.to_hstore
+        else
+          nil
         end
-        old_quote(value,column)
       end
     end
   end
