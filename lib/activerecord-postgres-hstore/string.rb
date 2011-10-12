@@ -9,10 +9,11 @@ class String
   # Validates the hstore format. Valid formats are:
   # * An empty string
   # * A string like %("foo"=>"bar"). I'll call it a "double quoted hstore format".
+  # * A string like %(foo=>bar). Postgres doesn't emit this but it does accept it as input, we should accept any input Postgres does
 
   def valid_hstore?
     pair = hstore_pair
-    !!match(/^\s*#{pair}\s*(,\s*#{pair})*\s*$/)
+    !!match(/^\s*(#{pair}\s*(,\s*#{pair})*)?\s*$/)
   end
 
   # Creates a hash from a valid double quoted hstore format, 'cause this is the format

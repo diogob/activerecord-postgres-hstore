@@ -2,6 +2,7 @@ require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
 describe "ActiverecordPostgresHstore" do
   it "should recognize a valid hstore string" do
+    "".valid_hstore?.should be_true
     "a=>b".valid_hstore?.should be_true
     '"a"=>"b"'.valid_hstore?.should be_true
     '"a" => "b"'.valid_hstore?.should be_true
