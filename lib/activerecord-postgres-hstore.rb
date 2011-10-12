@@ -1,6 +1,7 @@
 require 'rails'
 require 'rails/generators'
 require 'rails/generators/migration'
+require 'pg'
 
 # = Hstore Railtie
 #

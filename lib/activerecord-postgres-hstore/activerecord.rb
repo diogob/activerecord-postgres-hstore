@@ -77,12 +77,10 @@ module ActiveRecord
         if (column = column_for_attribute(name)) && (include_primary_key || !column.primary)
           if include_readonly_attributes || (!include_readonly_attributes && !self.class.readonly_attributes.include?(name))
             value = read_attribute(name)
-            if value && ((self.class.serialized_attributes.has_key?(name) && (value.acts_like?(:date) || value.acts_like?(:time))) || value.is_a?(Hash) || value.is_a?(Array))
-              if self.class.columns_hash[name].type == :hstore
-                value = value.to_hstore # Done!
-              else
-                value = value.to_yaml
-              end
+            if self.class.columns_hash[name].type == :hstore && value && value.is_a?(Hash)
+              value = value.to_hstore # Done!
+            elsif value && self.class.serialized_attributes.has_key?(name) && (value.acts_like?(:date) || value.acts_like?(:time) || value.is_a?(Hash) || value.is_a?(Array))
+              value = value.to_yaml
             end
             attrs[self.class.arel_table[name]] = value
           end
@@ -118,39 +116,36 @@ module ActiveRecord
     end
 
     class PostgreSQLColumn < Column
-      alias :old_type_cast_code :type_cast_code
-      alias :old_simplified_type :simplified_type
-
       # Does the type casting from hstore columns using String#from_hstore or Hash#from_hstore.
-      def type_cast_code(var_name)
-        type == :hstore ? "#{var_name}.from_hstore" : old_type_cast_code(var_name)
+      def type_cast_code_with_hstore(var_name)
+        type == :hstore ? "#{var_name}.from_hstore" : type_cast_code_without_hstore(var_name)
       end
 
       # Adds the hstore type for the column.
-      def simplified_type(field_type)
-        field_type =~ /^hstore$/ ? :hstore : old_simplified_type(field_type)
+      def simplified_type_with_hstore(field_type)
+        field_type == 'hstore' ? :hstore : simplified_type_without_hstore(field_type)
       end
-
+    
+      alias_method_chain :type_cast_code, :hstore
+      alias_method_chain :simplified_type, :hstore
     end
 
     class PostgreSQLAdapter < AbstractAdapter
-
-      alias :old_quote :quote
-      alias :old_columns :columns
-      alias :old_native_database_types :native_database_types
-    
-      def native_database_types
-        old_native_database_types.merge({:hstore => { :name => "hstore" }})
+      def native_database_types_with_hstore
+        native_database_types_without_hstore.merge({:hstore => { :name => "hstore" }})
       end
 
       # Quotes correctly a hstore column value.
-      def quote(value, column = nil)
-        if value && column && column.sql_type =~ /^hstore$/
+      def quote_with_hstore(value, column = nil)
+        if value && column && column.sql_type == 'hstore'
           raise HstoreTypeMismatch, "#{column.name} must have a Hash or a valid hstore value (#{value})" unless value.kind_of?(Hash) || value.valid_hstore?          
-          return value.to_hstore
+          return quote_without_hstore(value.to_hstore, column)
         end
-        old_quote(value,column)
+        quote_without_hstore(value,column)
       end
+      
+      alias_method_chain :quote, :hstore
+      alias_method_chain :native_database_types, :hstore 
     end
   end
 end
