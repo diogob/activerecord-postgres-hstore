@@ -7,7 +7,7 @@ class Hash
 
     map { |idx, val| 
       iv = [idx,val].map { |_| 
-        e = PGconn.escape(_.to_s).gsub(/''/, "'").gsub(/"/, '\"')
+        e = _.to_s.gsub(/"/, '\"')
         if _.nil?
           'NULL'
         elsif e =~ /[,\s=>]/ || e.blank?
