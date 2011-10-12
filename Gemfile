@@ -1,6 +1,7 @@
 source "http://rubygems.org"
 # Add dependencies required to use your gem here.
 gem 'activerecord'
+gem 'pg'
 gem 'rake'
 
 # Add dependencies to develop your gem here.
