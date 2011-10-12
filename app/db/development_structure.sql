@@ -268,6 +268,15 @@ CREATE FUNCTION hs_contains(hstore, hstore) RETURNS boolean
 
 
 --
+-- Name: hstore(text, text); Type: FUNCTION; Schema: public; Owner: -
+--
+
+CREATE FUNCTION hstore(text, text) RETURNS hstore
+    LANGUAGE c IMMUTABLE
+    AS '$libdir/hstore', 'tconvert';
+
+
+--
 -- Name: isdefined(hstore, text); Type: FUNCTION; Schema: public; Owner: -
 --
 
@@ -554,13 +563,6 @@ ALTER TABLE ONLY foos
 
 
 --
--- Name: bars_gin_data; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX bars_gin_data ON bars USING gin (data);
-
-
---
 -- Name: unique_schema_migrations; Type: INDEX; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -571,8 +573,8 @@ CREATE UNIQUE INDEX unique_schema_migrations ON schema_migrations USING btree (v
 -- PostgreSQL database dump complete
 --
 
-INSERT INTO schema_migrations (version) VALUES ('20100906191151');
-
 INSERT INTO schema_migrations (version) VALUES ('20100906191457');
 
 INSERT INTO schema_migrations (version) VALUES ('20100906191506');
+
+INSERT INTO schema_migrations (version) VALUES ('20100906191151');

@@ -11,5 +11,17 @@
 # It's strongly recommended to check this file into your version control system.
 
 ActiveRecord::Schema.define(:version => 20100906191506) do
-  execute File.read("#{Rails.root}/db/development_structure.sql")
+
+  create_table "bars", :force => true do |t|
+    t.hstore   "data"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "foos", :force => true do |t|
+    t.text     "data"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
 end
