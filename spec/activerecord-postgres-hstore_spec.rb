@@ -29,5 +29,25 @@ describe "ActiverecordPostgresHstore" do
   it "should convert empty string" do
     ''.from_hstore.should eq({})
   end
-  
+
+  context "validation" do
+
+    it "should pass for a blank string" do
+      "".valid_hstore?.should == true
+    end
+
+    it "should pass for double quoted hstore format" do
+      %("foo"=>"bar").valid_hstore?.should == true
+    end
+
+    it "should pass for single quoted hstore format" do
+      %('foo'=>'bar').valid_hstore?.should == true
+    end
+
+    it "should pass for single quoted hstore format" do
+      %(:foo =>'bar').valid_hstore?.should == true
+    end
+
+  end
+
 end

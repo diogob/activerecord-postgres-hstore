@@ -19,7 +19,8 @@ class String
     # this is a big problem, 'cause regexes does not know how to count...
     # how should i very values quoted with two single quotes? using .+ sux.
     sngl_quotes_re = /'(.+)'=>'(.+)'/
-    self.match(dbl_quotes_re) || self.match(sngl_quotes_re)
+    # self.match(dbl_quotes_re) || self.match(sngl_quotes_re)
+    true if (self.match(dbl_quotes_re) || self.match(sngl_quotes_re))
   end
 
   # Creates a hash from a valid double quoted hstore format, 'cause this is the format
