@@ -40,7 +40,12 @@ class Hstore < Rails::Railtie
     end
 
     def create_migration_file
-      migration_template 'setup_hstore.rb', 'db/migrate/setup_hstore.rb'
+      pgversion = ActiveRecord::Base.connection.send(:postgresql_version)
+      if pgversion < 90100
+        migration_template 'setup_hstore.rb', 'db/migrate/setup_hstore.rb'
+      else
+        migration_template 'setup_hstore91.rb', 'db/migrate/setup_hstore.rb'
+      end
     end
 
   end
