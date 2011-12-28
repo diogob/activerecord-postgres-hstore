@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = "activerecord-postgres-hstore"
-  s.version = "0.2.0"
+  s.version = "0.3.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Juan Maiz", "Diogo Biazus"]
@@ -84,6 +84,7 @@ Gem::Specification.new do |s|
     "lib/activerecord-postgres-hstore/hash.rb",
     "lib/activerecord-postgres-hstore/string.rb",
     "lib/templates/setup_hstore.rb",
+    "lib/templates/setup_hstore91.rb",
     "spec/activerecord-postgres-hstore_spec.rb",
     "spec/spec_helper.rb"
   ]
