@@ -1,3 +1,17 @@
+module ActiveRecord
+  module Coders
+    class Hstore
+      def self.load(hstore)
+        hstore.nil? ? nil : hstore.from_hstore
+      end
+
+      def self.dump(obj)
+        obj.nil? ? nil : obj.to_hstore
+      end
+    end
+  end
+end
+
 # Extends AR to add Hstore functionality.
 module ActiveRecord
 
@@ -66,6 +80,7 @@ module ActiveRecord
       destroy_keys(attribute, *keys).save
     end
 
+    if Rails.version < '3.1.0'
     # This method is replaced for Rails 3 compatibility.
     # All I do is add the condition when the field is a hash that converts the value
     # to hstore format.
@@ -87,6 +102,7 @@ module ActiveRecord
         end
       end
       attrs
+    end
     end
 
   end
