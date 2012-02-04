@@ -1,17 +1,3 @@
-module ActiveRecord
-  module Coders
-    class Hstore
-      def self.load(hstore)
-        hstore.nil? ? nil : hstore.from_hstore
-      end
-
-      def self.dump(obj)
-        obj.nil? ? nil : obj.to_hstore
-      end
-    end
-  end
-end
-
 # Extends AR to add Hstore functionality.
 module ActiveRecord
 
