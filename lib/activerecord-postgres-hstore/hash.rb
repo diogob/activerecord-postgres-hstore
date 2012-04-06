@@ -10,14 +10,12 @@ class Hash
         e = _.to_s.gsub(/"/, '\"')
         if _.nil?
           'NULL'
-        elsif e =~ /[,\s=>]/ || e.blank?
-          '"%s"' % e
         else
-          e
+          '"%s"' % e
         end
       }
 
-      "\"%s\"=>\"%s\"" % iv
+      "\"%s\"=>%s" % iv
     } * ","
   end
 
