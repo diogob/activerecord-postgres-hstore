@@ -17,7 +17,7 @@ class Hash
         end
       }
 
-      "%s=>%s" % iv
+      "\"%s\"=>\"%s\"" % iv
     } * ","
   end
 
