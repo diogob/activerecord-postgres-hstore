@@ -66,6 +66,7 @@ module ActiveRecord
       destroy_keys(attribute, *keys).save
     end
 
+    if Rails.version < '3.1.0'
     # This method is replaced for Rails 3 compatibility.
     # All I do is add the condition when the field is a hash that converts the value
     # to hstore format.
@@ -87,6 +88,7 @@ module ActiveRecord
         end
       end
       attrs
+    end
     end
 
   end
