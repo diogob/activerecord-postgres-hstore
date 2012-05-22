@@ -1,3 +1,5 @@
+!https://secure.travis-ci.org/softa/activerecord-postgres-hstore.png?branch=master(Build Status)!:http://travis-ci.org/softa/activerecord-postgres-hstore
+
 h2. Goodbye serialize, hello hstore.
 
 You need dynamic columns in your tables. What do you do?
