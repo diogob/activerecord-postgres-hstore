@@ -12,4 +12,5 @@ group :development, :test do
   gem "jeweler", "~> 1.8.3"
   gem "rdoc"
   gem "rspec"
+  gem "rcov"
 end
