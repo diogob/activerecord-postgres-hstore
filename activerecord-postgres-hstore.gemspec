@@ -4,25 +4,26 @@
 # -*- encoding: utf-8 -*-
 
 Gem::Specification.new do |s|
-  s.name = %q{activerecord-postgres-hstore}
-  s.version = "0.3.0"
+  s.name = "activerecord-postgres-hstore"
+  s.version = "0.4.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Juan Maiz", "Diogo Biazus"]
-  s.date = %q{2011-12-28}
-  s.description = %q{This gem adds support for the postgres hstore type. It is the _just right_ alternative for storing hashes instead of using seralization or dynamic tables.}
-  s.email = %q{juanmaiz@gmail.com}
+  s.date = "2012-05-22"
+  s.description = "This gem adds support for the postgres hstore type. It is the _just right_ alternative for storing hashes instead of using seralization or dynamic tables."
+  s.email = "juanmaiz@gmail.com"
   s.extra_rdoc_files = [
     "LICENSE",
-    "README.textile"
+    "README.md"
   ]
   s.files = [
     ".document",
     ".rspec",
+    ".travis.yml",
     "Gemfile",
     "Gemfile.lock",
     "LICENSE",
-    "README.textile",
+    "README.md",
     "Rakefile",
     "VERSION",
     "activerecord-postgres-hstore.gemspec",
@@ -81,45 +82,56 @@ Gem::Specification.new do |s|
     "app/vendor/plugins/.gitkeep",
     "lib/activerecord-postgres-hstore.rb",
     "lib/activerecord-postgres-hstore/activerecord.rb",
+    "lib/activerecord-postgres-hstore/coder.rb",
     "lib/activerecord-postgres-hstore/hash.rb",
+    "lib/activerecord-postgres-hstore/railties.rb",
     "lib/activerecord-postgres-hstore/string.rb",
     "lib/templates/setup_hstore.rb",
     "lib/templates/setup_hstore91.rb",
+    "spec/activerecord-coders-hstore.rb",
     "spec/activerecord-postgres-hstore_spec.rb",
     "spec/spec_helper.rb"
   ]
-  s.homepage = %q{http://github.com/softa/activerecord-postgres-hstore}
+  s.homepage = "http://github.com/softa/activerecord-postgres-hstore"
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.3.7}
-  s.summary = %q{Goodbye serialize, hello hstore}
+  s.rubygems_version = "1.8.21"
+  s.summary = "Goodbye serialize, hello hstore"
 
   if s.respond_to? :specification_version then
-    current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
     s.specification_version = 3
 
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-      s.add_runtime_dependency(%q<activerecord>, [">= 0"])
+      s.add_runtime_dependency(%q<rails>, [">= 0"])
       s.add_runtime_dependency(%q<rake>, [">= 0"])
+      s.add_runtime_dependency(%q<pg>, [">= 0"])
       s.add_development_dependency(%q<shoulda>, [">= 0"])
-      s.add_development_dependency(%q<bundler>, ["~> 1.0.0"])
-      s.add_development_dependency(%q<jeweler>, ["~> 1.6.4"])
+      s.add_development_dependency(%q<bundler>, ["~> 1.1.3"])
+      s.add_development_dependency(%q<jeweler>, ["~> 1.8.3"])
       s.add_development_dependency(%q<rdoc>, [">= 0"])
+      s.add_development_dependency(%q<rspec>, [">= 0"])
+      s.add_development_dependency(%q<rcov>, [">= 0"])
     else
-      s.add_dependency(%q<activerecord>, [">= 0"])
+      s.add_dependency(%q<rails>, [">= 0"])
       s.add_dependency(%q<rake>, [">= 0"])
+      s.add_dependency(%q<pg>, [">= 0"])
       s.add_dependency(%q<shoulda>, [">= 0"])
-      s.add_dependency(%q<bundler>, ["~> 1.0.0"])
-      s.add_dependency(%q<jeweler>, ["~> 1.6.4"])
+      s.add_dependency(%q<bundler>, ["~> 1.1.3"])
+      s.add_dependency(%q<jeweler>, ["~> 1.8.3"])
       s.add_dependency(%q<rdoc>, [">= 0"])
+      s.add_dependency(%q<rspec>, [">= 0"])
+      s.add_dependency(%q<rcov>, [">= 0"])
     end
   else
-    s.add_dependency(%q<activerecord>, [">= 0"])
+    s.add_dependency(%q<rails>, [">= 0"])
     s.add_dependency(%q<rake>, [">= 0"])
+    s.add_dependency(%q<pg>, [">= 0"])
     s.add_dependency(%q<shoulda>, [">= 0"])
-    s.add_dependency(%q<bundler>, ["~> 1.0.0"])
-    s.add_dependency(%q<jeweler>, ["~> 1.6.4"])
+    s.add_dependency(%q<bundler>, ["~> 1.1.3"])
+    s.add_dependency(%q<jeweler>, ["~> 1.8.3"])
     s.add_dependency(%q<rdoc>, [">= 0"])
+    s.add_dependency(%q<rspec>, [">= 0"])
+    s.add_dependency(%q<rcov>, [">= 0"])
   end
 end
 
