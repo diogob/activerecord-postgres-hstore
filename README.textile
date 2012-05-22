@@ -34,6 +34,22 @@ On Mac <del>...you are screwed. Use a VM.</del> you should use "the binary packa
 
 "Homebrew's":https://github.com/mxcl/homebrew Postgres installation also includes the contrib packages. @brew install postgres@
 
+h2. Notes for Rails 3.1 and above
+
+The master branch already support a custom serialization coder.
+
+If you want to use it just put in your Gemfile:
+
+@gem 'activerecord-postgres-hstore', git: 'git://github.com/softa/activerecord-postgres-hstore.git'@
+
+If you install them gem from the master branch you also have to insert a line in each model that uses hstore.
+Assuming a model called *Person*, with a *data* field on it, the code should look like:
+
+bc. 
+  class Person < ActiveRecord::Base
+    serialize :data, ActiveRecord::Coders::Hstore
+  end
+
 h2. Install
 
 Hstore is a postgres contrib type. Check it out first:
