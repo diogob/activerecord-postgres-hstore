@@ -41,8 +41,8 @@ If you install them gem from the master branch you also have to insert a line in
 Assuming a model called *Person*, with a *data* field on it, the code should look like:
 
 bc. class Person < ActiveRecord::Base
-    serialize :data, ActiveRecord::Coders::Hstore
-  end
+  serialize :data, ActiveRecord::Coders::Hstore
+end
 
 h2. Install
 
