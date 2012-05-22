@@ -25,19 +25,14 @@ Benchmarks made in my local machine, with a million records. Time is in millisec
 h2. Requirements
 
 Postgresql 8.4+ (also tested with 9.0) with contrib and Rails 3. (It might work on 2.3.x with minor patches...)
-
-On Ubuntu, this is easy:
-
-@sudo apt-get install postgresql-contrib-9.0@
+On Ubuntu, this is easy: @sudo apt-get install postgresql-contrib-9.0@
 
 On Mac <del>...you are screwed. Use a VM.</del> you should use "the binary package kindly provided by EnterpriseDB":http://www.enterprisedb.com/products-services-training/pgdownload#osx
-
 "Homebrew's":https://github.com/mxcl/homebrew Postgres installation also includes the contrib packages. @brew install postgres@
 
 h2. Notes for Rails 3.1 and above
 
 The master branch already support a custom serialization coder.
-
 If you want to use it just put in your Gemfile:
 
 @gem 'activerecord-postgres-hstore', git: 'git://github.com/softa/activerecord-postgres-hstore.git'@
@@ -45,16 +40,13 @@ If you want to use it just put in your Gemfile:
 If you install them gem from the master branch you also have to insert a line in each model that uses hstore.
 Assuming a model called *Person*, with a *data* field on it, the code should look like:
 
-bc. 
-  class Person < ActiveRecord::Base
+bc. class Person < ActiveRecord::Base
     serialize :data, ActiveRecord::Coders::Hstore
   end
 
 h2. Install
 
-Hstore is a postgres contrib type. Check it out first:
-
-"http://www.postgresql.org/docs/9.0/static/hstore.html":http://www.postgresql.org/docs/9.0/static/hstore.html
+Hstore is a PostgreSQL contrib type. Check it out first: "http://www.postgresql.org/docs/9.2/static/hstore.html":http://www.postgresql.org/docs/9.0/static/hstore.html
 
 Then, just add this to your Gemfile:
 
@@ -79,7 +71,7 @@ bc. development:
   password: 
   pool: 5
 
-Now you need to create a migration that adds hstore support for your postgresql database:
+Now you need to create a migration that adds hstore support for your PostgreSQL database:
 
 @rails g hstore:setup@
 
@@ -93,19 +85,17 @@ Finally you can create your own tables using hstore type. It's easy:
 @rake db:migrate@
 
 You're done.
-
 Well, not yet. Don't forget to add indexes. Like this:
 
 @CREATE INDEX people_gist_data ON people USING GIST(data);@
 or
 @CREATE INDEX people_gin_data ON people USING GIN(data);@
 
-To my experience GIN is faster for searching records.
+To understand the difference between the two types of indexes take a look at PostgreSQL docs: "http://www.postgresql.org/docs/9.2/static/textsearch-indexes.html":http://www.postgresql.org/docs/9.2/static/textsearch-indexes.html
 
 h2. Usage
 
 Once you have it installed, you just need to learn a little bit of new sqls for selecting stuff (creating and updating is transparent).
-
 Find records that contains a key named 'foo':
 
 @Person.where("data ? 'foo'")@
@@ -145,9 +135,7 @@ The destroy_key method returns 'self', so you can chain it:
 But there it a shortcut for that:
 
 @person.destroy_keys(:data, :foo, :bar)@
-
 or...
-
 @person.destroy_keys!(:data, :foo, :bar)@
 
 And finally, if you need to delete keys in many rows, you can:
@@ -162,7 +150,7 @@ Have fun.
 
 h2. Help
 
-You can use issues in github for that. Or else you can reach me at twitter: @joaomilho
+You can use issues in github for that. Or else you can reach us at twitter: @dbiazus or @joaomilho
 
 h2. Note on Patches/Pull Requests
  
