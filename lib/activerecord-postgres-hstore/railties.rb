@@ -28,7 +28,7 @@ class Hstore < Rails::Railtie
     include Rails::Generators::Migration
 
     def self.source_root
-      @source_root ||= File.join(File.dirname(__FILE__), 'templates')
+      @source_root ||= File.join(File.dirname(__FILE__), '../templates')
     end
 
     def self.next_migration_number(dirname)
