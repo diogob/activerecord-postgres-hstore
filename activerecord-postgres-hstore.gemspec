@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Juan Maiz", "Diogo Biazus"]
-  s.date = "2012-05-22"
+  s.date = "2012-06-14"
   s.description = "This gem adds support for the postgres hstore type. It is the _just right_ alternative for storing hashes instead of using seralization or dynamic tables."
   s.email = "juanmaiz@gmail.com"
   s.extra_rdoc_files = [
@@ -95,7 +95,7 @@ Gem::Specification.new do |s|
   s.homepage = "http://github.com/softa/activerecord-postgres-hstore"
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
-  s.rubygems_version = "1.8.21"
+  s.rubygems_version = "1.8.15"
   s.summary = "Goodbye serialize, hello hstore"
 
   if s.respond_to? :specification_version then
