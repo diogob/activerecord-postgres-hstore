@@ -23,9 +23,14 @@ class String
     token_pairs = token_pairs.map { |k,v|
       [k,v].map { |t| 
         case t
-        when nil then t
-        when /^"(.*)"$/ then $1.gsub(/\\(.)/, '\1')
-        else t.gsub(/\\(.)/, '\1')
+        when nil
+          t
+        when /^"{(.*)"$/ # A quoted hash
+          $1.gsub(/\\(.)/, '\1').from_hstore
+        when /^"(.*)"$/ # A quoted value
+          $1.gsub(/\\(.)/, '\1')
+        else
+          t.gsub(/\\(.)/, '\1')
         end
       }
     }

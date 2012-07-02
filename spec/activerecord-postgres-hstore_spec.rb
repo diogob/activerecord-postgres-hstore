@@ -25,8 +25,18 @@ describe "ActiverecordPostgresHstore" do
     {:a => 1, :b => 2}.to_hstore.from_hstore.should eq({"a" => "1", "b" => "2"})
   end
 
+  it "should convert complex hash to hstore string" do
+    hash = {:name => {:first => "David", :last => "Smith"}}
+    hash.to_hstore.should eq(%q(name=>"{:first=>\"David\", :last=>\"Smith\"}"))
+  end
+
   it "should convert hstore string to hash" do
     '"a"=>"1", "b"=>"2"'.from_hstore.should eq({'a' => '1', 'b' => '2'})
+  end
+
+  it "should convert a complex hstore string to a hash" do
+    hash = {"name" => {"first" => "David", "last" => "Smith"}}
+    %q("name"=>"{\"first\"=>\"David\", \"last\"=>\"Smith\"}").from_hstore.should eq(hash)
   end
  
   it "should quote correctly" do
