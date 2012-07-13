@@ -140,6 +140,20 @@ and with many keys:
 
     Person.delete_keys(:data, :foo, :bar)
 
+Caveats
+-------
+
+hstore keys and values have to be strings. This means `true` will become `"true"` and `42` will become `"42"` after you save the record. Only `nil` values are preserved.
+
+It is also confusing when querying:
+
+    Person.where("data -> 'foo' = :value", value: true).to_sql
+    #=> SELECT "people".* FROM "people" WHERE ("data -> 'foo' = 't'") # notice 't'
+
+To avoid the above, make sure all named parameters are strings:
+
+    Person.where("data -> 'foo' = :value", value: some_var.to_s)
+
 Have fun.
 
 Help
