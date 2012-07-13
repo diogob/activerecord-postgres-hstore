@@ -13,22 +13,22 @@ Requirements
 ------------
 
 Postgresql 8.4+ (also tested with 9.0) with contrib and Rails 3. (It
-might work on 2.3.x with minor patches…)  
+might work on 2.3.x with minor patches…)
 On Ubuntu, this is easy: `sudo apt-get install postgresql-contrib-9.0`
 
-On Mac <del> …you are screwed. Use a VM.  </del> you should use [the binary package kindly provided by EnterpriseDB](http://www.enterprisedb.com/products-services-training/pgdownload#osx)  
+On Mac <del> …you are screwed. Use a VM.  </del> you should use [the binary package kindly provided by EnterpriseDB](http://www.enterprisedb.com/products-services-training/pgdownload#osx)
 [Homebrew’s](https://github.com/mxcl/homebrew) Postgres installation also includes the contrib packages: `brew install postgres`
 
 Notes for Rails 3.1 and above
 -----------------------------
 
-The master branch already support a custom serialization coder.  
+The master branch already support a custom serialization coder.
 If you want to use it just put in your Gemfile:
 
     gem 'activerecord-postgres-hstore', git: 'git://github.com/softa/activerecord-postgres-hstore.git'
 
 If you install them gem from the master branch you also have to insert a
-line in each model that uses hstore.  
+line in each model that uses hstore.
 Assuming a model called **Person**, with a **data** field on it, the
 code should look like:
 
@@ -63,7 +63,7 @@ e.g.:
       database: hstorage_dev
       encoding: unicode
       username: postgres
-      password: 
+      password:
       pool: 5
 
 Now you need to create a migration that adds hstore support for your
@@ -80,11 +80,11 @@ Finally you can create your own tables using hstore type. It’s easy:
     rails g model Person name:string data:hstore
     rake db:migrate
 
-You’re done.  
+You’re done.
 Well, not yet. Don’t forget to add indexes. Like this:
 
-`CREATE INDEX people_gist_data ON people USING GIST(data);`  
-or  
+`CREATE INDEX people_gist_data ON people USING GIST(data);`
+or
 `CREATE INDEX people_gin_data ON people USING GIN(data);`
 
 To understand the difference between the two types of indexes take a
@@ -94,7 +94,7 @@ Usage
 -----
 
 Once you have it installed, you just need to learn a little bit of new
-sqls for selecting stuff (creating and updating is transparent).  
+sqls for selecting stuff (creating and updating is transparent).
 Find records that contains a key named 'foo’:
 
     Person.where("data ? 'foo'")
@@ -107,9 +107,9 @@ This same sql is at least twice as fast (using indexes) if you do it
 that way:
 
     Person.where("data > 'foo=>bar'")
-  
+
 Find records where 'foo’ is not equal to 'bar’:
-  
+
     Person.where("data -> 'foo' <> 'bar'")
 
 Find records where 'foo’ is like 'bar’:
@@ -128,7 +128,7 @@ The destroy\_key method returns 'self’, so you can chain it:
 
     person.destroy_key(:data, :foo).destroy_key(:data, :bar).save
 
-But there is a shortcuts for that: 
+But there is a shortcuts for that:
 
    person.destroy_keys(:data, :foo, :bar)
 
@@ -139,6 +139,20 @@ And finally, if you need to delete keys in many rows, you can:
 and with many keys:
 
     Person.delete_keys(:data, :foo, :bar)
+
+Caveats
+-------
+
+hstore keys and values have to be strings. This means `true` will become `"true"` and `42` will become `"42"` after you save the record. Only `nil` values are preserved.
+
+It is also confusing when querying:
+
+    Person.where("data -> 'foo' = :value", value: true).to_sql
+    #=> SELECT "people".* FROM "people" WHERE ("data -> 'foo' = 't'") # notice 't'
+
+To avoid the above, make sure all named parameters are strings:
+
+    Person.where("data -> 'foo' = :value", value: some_var.to_s)
 
 Have fun.
 
@@ -151,10 +165,10 @@ twitter: [@dbiazus](https://twitter.com/#!/dbiazus) or [@joaomilho](https://twit
 Note on Patches/Pull Requests
 -----------------------------
 
-* Fork the project.  
-* Make your feature addition or bug fix.  
-* Add tests for it. This is important so I don’t break it in a future version unintentionally.  
-* Commit, do not mess with rakefile, version, or history.  (if you want to have your own version, that is fine but bump version in a commit by itself I can ignore when I pull)  
+* Fork the project.
+* Make your feature addition or bug fix.
+* Add tests for it. This is important so I don’t break it in a future version unintentionally.
+* Commit, do not mess with rakefile, version, or history.  (if you want to have your own version, that is fine but bump version in a commit by itself I can ignore when I pull)
 * Send me a pull request. Bonus points for topic branches.
 
 Copyright
