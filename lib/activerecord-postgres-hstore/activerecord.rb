@@ -117,6 +117,22 @@ module ActiveRecord
 
     end
 
+    class Table
+
+      # Adds hstore type for migrations. So you can add columns to a table like:
+      #   change_table :people do |t|
+      #     ...
+      #     t.hstore :info
+      #     ...
+      #   end
+      def hstore(*args)
+        options = args.extract_options!
+        column_names = args
+        column_names.each { |name| column(name, 'hstore', options) }
+      end
+
+    end
+
     class PostgreSQLColumn < Column
       # Does the type casting from hstore columns using String#from_hstore or Hash#from_hstore.
       def type_cast_code_with_hstore(var_name)
@@ -127,7 +143,7 @@ module ActiveRecord
       def simplified_type_with_hstore(field_type)
         field_type == 'hstore' ? :hstore : simplified_type_without_hstore(field_type)
       end
-    
+
       alias_method_chain :type_cast_code, :hstore
       alias_method_chain :simplified_type, :hstore
     end
@@ -140,14 +156,14 @@ module ActiveRecord
       # Quotes correctly a hstore column value.
       def quote_with_hstore(value, column = nil)
         if value && column && column.sql_type == 'hstore'
-          raise HstoreTypeMismatch, "#{column.name} must have a Hash or a valid hstore value (#{value})" unless value.kind_of?(Hash) || value.valid_hstore?          
+          raise HstoreTypeMismatch, "#{column.name} must have a Hash or a valid hstore value (#{value})" unless value.kind_of?(Hash) || value.valid_hstore?
           return quote_without_hstore(value.to_hstore, column)
         end
         quote_without_hstore(value,column)
       end
-      
+
       alias_method_chain :quote, :hstore
-      alias_method_chain :native_database_types, :hstore 
+      alias_method_chain :native_database_types, :hstore
     end
   end
 end
