@@ -1,0 +1,235 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>activerecord-postgres-hstore by softa</title>
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script src="javascripts/main.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+  </head>
+  <body>
+
+      <header>
+        <h1>activerecord-postgres-hstore</h1>
+        <p>Goodbye serialize, hello hstore. Speed up hashes in the database.</p>
+      </header>
+
+      <div id="banner">
+        <span id="logo"></span>
+
+        <a href="https://github.com/softa/activerecord-postgres-hstore" class="button fork"><strong>View On GitHub</strong></a>
+        <div class="downloads">
+          <span>Downloads:</span>
+          <ul>
+            <li><a href="https://github.com/softa/activerecord-postgres-hstore/zipball/master" class="button">ZIP</a></li>
+            <li><a href="https://github.com/softa/activerecord-postgres-hstore/tarball/master" class="button">TAR</a></li>
+          </ul>
+        </div>
+      </div><!-- end banner -->
+
+    <div class="wrapper">
+      <nav>
+        <ul></ul>
+      </nav>
+      <section>
+        <p><a href="http://travis-ci.org/softa/activerecord-postgres-hstore"><img src="https://secure.travis-ci.org/softa/activerecord-postgres-hstore.png?branch=master" alt="Build Status"></a></p>
+
+<h2>Goodbye serialize, hello hstore.</h2>
+
+<p>You need dynamic columns in your tables. What do you do?</p>
+
+<ul>
+<li>Create lots of tables to handle it. Nice, now you’ll need more models and lots of additional sqls. Insertion and selection will be slow as hell.</li>
+<li>Use a noSQL database just for this issue. Good luck.</li>
+<li>Create a serialized column. Nice, insertion will be fine, and reading data from a record too. But, what if you have a condition in your select that includes serialized data? Yeah, regular expressions.</li>
+</ul><h2>Requirements</h2>
+
+<p>Postgresql 8.4+ (also tested with 9.0) with contrib and Rails 3. (It
+might work on 2.3.x with minor patches…)
+On Ubuntu, this is easy: <code>sudo apt-get install postgresql-contrib-9.0</code></p>
+
+<p>On Mac <del> …you are screwed. Use a VM.  </del> you should use <a href="http://www.enterprisedb.com/products-services-training/pgdownload#osx">the binary package kindly provided by EnterpriseDB</a>
+<a href="https://github.com/mxcl/homebrew">Homebrew’s</a> Postgres installation also includes the contrib packages: <code>brew install postgres</code></p>
+
+<h2>Notes for Rails 3.1 and above</h2>
+
+<p>The master branch already support a custom serialization coder.
+If you want to use it just put in your Gemfile:</p>
+
+<pre><code>gem 'activerecord-postgres-hstore', git: 'git://github.com/softa/activerecord-postgres-hstore.git'
+</code></pre>
+
+<p>If you install them gem from the master branch you also have to insert a
+line in each model that uses hstore.
+Assuming a model called <strong>Person</strong>, with a <strong>data</strong> field on it, the
+code should look like:</p>
+
+<pre><code>class Person &lt; ActiveRecord::Base
+  serialize :data, ActiveRecord::Coders::Hstore
+end
+</code></pre>
+
+<h2>Install</h2>
+
+<p>Hstore is a PostgreSQL contrib type, <a href="http://www.postgresql.org/docs/9.2/static/hstore.html">check it out first</a>.</p>
+
+<p>Then, just add this to your Gemfile:</p>
+
+<p><code>gem 'activerecord-postgres-hstore'</code></p>
+
+<p>And run your bundler:</p>
+
+<p><code>bundle install</code></p>
+
+<p>Make sure that you have the desired database, if not create it as the
+desired user:</p>
+
+<p><code>createdb hstorage_dev</code></p>
+
+<p>Add the parameters to your database.yml (these are system dependant),
+e.g.:</p>
+
+<pre><code>development:
+  adapter: postgresql
+  host: 127.0.0.1
+  database: hstorage_dev
+  encoding: unicode
+  username: postgres
+  password:
+  pool: 5
+</code></pre>
+
+<p>Now you need to create a migration that adds hstore support for your
+PostgreSQL database:</p>
+
+<p><code>rails g hstore:setup</code></p>
+
+<p>Run it:</p>
+
+<p><code>rake db:migrate</code></p>
+
+<p>Finally you can create your own tables using hstore type. It’s easy:</p>
+
+<pre><code>rails g model Person name:string data:hstore
+rake db:migrate
+</code></pre>
+
+<p>You’re done.
+Well, not yet. Don’t forget to add indexes. Like this:</p>
+
+<p><code>CREATE INDEX people_gist_data ON people USING GIST(data);</code>
+or
+<code>CREATE INDEX people_gin_data ON people USING GIN(data);</code></p>
+
+<p>To understand the difference between the two types of indexes take a
+look at <a href="http://www.postgresql.org/docs/9.2/static/textsearch-indexes.html">PostgreSQL docs</a>.</p>
+
+<h2>Usage</h2>
+
+<p>Once you have it installed, you just need to learn a little bit of new
+sqls for selecting stuff (creating and updating is transparent).
+Find records that contains a key named 'foo’:</p>
+
+<pre><code>Person.where("data ? 'foo'")
+</code></pre>
+
+<p>Find records where 'foo’ is equal to 'bar’:</p>
+
+<pre><code>Person.where("data -&gt; 'foo' = 'bar'")
+</code></pre>
+
+<p>This same sql is at least twice as fast (using indexes) if you do it
+that way:</p>
+
+<pre><code>Person.where("data &gt; 'foo=&gt;bar'")
+</code></pre>
+
+<p>Find records where 'foo’ is not equal to 'bar’:</p>
+
+<pre><code>Person.where("data -&gt; 'foo' &lt;&gt; 'bar'")
+</code></pre>
+
+<p>Find records where 'foo’ is like 'bar’:</p>
+
+<pre><code>Person.where("data -&gt; 'foo' LIKE '%bar%'")
+</code></pre>
+
+<p>If you need to delete a key in a record, you can do it that way:</p>
+
+<pre><code>person.destroy_key(:data, :foo)
+</code></pre>
+
+<p>This way you’ll also save the record:</p>
+
+<pre><code>person.destroy_key!(:data, :foo)
+</code></pre>
+
+<p>The destroy_key method returns 'self’, so you can chain it:</p>
+
+<pre><code>person.destroy_key(:data, :foo).destroy_key(:data, :bar).save
+</code></pre>
+
+<p>But there is a shortcuts for that:</p>
+
+<p>person.destroy_keys(:data, :foo, :bar)</p>
+
+<p>And finally, if you need to delete keys in many rows, you can:</p>
+
+<pre><code>Person.delete_key(:data, :foo)
+</code></pre>
+
+<p>and with many keys:</p>
+
+<pre><code>Person.delete_keys(:data, :foo, :bar)
+</code></pre>
+
+<h2>Caveats</h2>
+
+<p>hstore keys and values have to be strings. This means <code>true</code> will become <code>"true"</code> and <code>42</code> will become <code>"42"</code> after you save the record. Only <code>nil</code> values are preserved.</p>
+
+<p>It is also confusing when querying:</p>
+
+<pre><code>Person.where("data -&gt; 'foo' = :value", value: true).to_sql
+#=&gt; SELECT "people".* FROM "people" WHERE ("data -&gt; 'foo' = 't'") # notice 't'
+</code></pre>
+
+<p>To avoid the above, make sure all named parameters are strings:</p>
+
+<pre><code>Person.where("data -&gt; 'foo' = :value", value: some_var.to_s)
+</code></pre>
+
+<p>Have fun.</p>
+
+<h2>Help</h2>
+
+<p>You can use issues in github for that. Or else you can reach us at
+twitter: <a href="https://twitter.com/#!/dbiazus">@dbiazus</a> or <a href="https://twitter.com/#!/joaomilho">@joaomilho</a></p>
+
+<h2>Note on Patches/Pull Requests</h2>
+
+<ul>
+<li>Fork the project.</li>
+<li>Make your feature addition or bug fix.</li>
+<li>Add tests for it. This is important so I don’t break it in a future version unintentionally.</li>
+<li>Commit, do not mess with rakefile, version, or history.  (if you want to have your own version, that is fine but bump version in a commit by itself I can ignore when I pull)</li>
+<li>Send me a pull request. Bonus points for topic branches.</li>
+</ul><h2>Copyright</h2>
+
+<p>Copyright © 2010 Juan Maiz. See LICENSE for details.</p>
+      </section>
+      <footer>
+        <p>Project maintained by <a href="https://github.com/softa">softa</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="http://twitter.com/#!/michigangraham">mattgraham</a></small></p>
+      </footer>
+    </div>
+    <!--[if !IE]><script>fixScale(document);</script><!--<![endif]-->
+    
+  </body>
+</html>
