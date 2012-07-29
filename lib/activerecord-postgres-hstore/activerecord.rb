@@ -66,7 +66,7 @@ module ActiveRecord
       destroy_keys(attribute, *keys).save
     end
 
-    if Rails.version < '3.1.0'
+    if defined? Rails and Rails.version < '3.1.0'
     # This method is replaced for Rails 3 compatibility.
     # All I do is add the condition when the field is a hash that converts the value
     # to hstore format.
@@ -127,7 +127,7 @@ module ActiveRecord
       def simplified_type_with_hstore(field_type)
         field_type == 'hstore' ? :hstore : simplified_type_without_hstore(field_type)
       end
-    
+
       alias_method_chain :type_cast_code, :hstore
       alias_method_chain :simplified_type, :hstore
     end
@@ -140,14 +140,14 @@ module ActiveRecord
       # Quotes correctly a hstore column value.
       def quote_with_hstore(value, column = nil)
         if value && column && column.sql_type == 'hstore'
-          raise HstoreTypeMismatch, "#{column.name} must have a Hash or a valid hstore value (#{value})" unless value.kind_of?(Hash) || value.valid_hstore?          
+          raise HstoreTypeMismatch, "#{column.name} must have a Hash or a valid hstore value (#{value})" unless value.kind_of?(Hash) || value.valid_hstore?
           return quote_without_hstore(value.to_hstore, column)
         end
         quote_without_hstore(value,column)
       end
-      
+
       alias_method_chain :quote, :hstore
-      alias_method_chain :native_database_types, :hstore 
+      alias_method_chain :native_database_types, :hstore
     end
   end
 end
