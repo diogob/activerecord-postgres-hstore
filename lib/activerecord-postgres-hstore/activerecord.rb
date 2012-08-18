@@ -103,6 +103,19 @@ module ActiveRecord
 
     module SchemaStatements
 
+      # Installs hstore by creating the Postgres extension
+      # if it does not exist
+      #
+      def install_hstore
+        execute "CREATE EXTENSION IF NOT EXISTS hstore"
+      end
+
+      # Uninstalls hstore by dropping Postgres extension if it exists
+      #
+      def uninstall_hstore
+        execute "DROP EXTENSION IF EXISTS hstore"
+      end
+
       # Adds a GiST or GIN index to a table which has an hstore column.
       #
       # Example:
