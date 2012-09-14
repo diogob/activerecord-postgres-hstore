@@ -63,11 +63,27 @@ describe "ActiverecordPostgresHstore" do
   end
 
   it "should quote keys and values correctly with combinations of single and double quotes" do
-    { %q("a') => %q(b "a' b) }.to_hstore.should eq(%q(\"a'=>"b \"a' b"))
+    { %q("a') => %q(b "a' b) }.to_hstore.should eq(%q("\"a'"=>"b \"a' b"))
   end
 
   it "should unquote keys and values correctly with combinations of single and double quotes" do
     %q("\"a'"=>"b \"a' b").from_hstore.should eq({%q("a') => %q(b "a' b)})
+  end
+
+  it "should quote keys and values correctly with backslashes" do
+    { %q(\\) => %q(\\) }.to_hstore.should eq(%q("\\\\"=>"\\\\"))
+  end
+  
+  it "should unquote keys and values correctly with backslashes" do
+    %q("\\\\"=>"\\\\").from_hstore.should eq({ %q(\\) => %q(\\) })
+  end
+
+  it "should quote keys and values correctly with combinations of backslashes and quotes" do
+    { %q(' \\ ") => %q(" \\ ') }.to_hstore.should eq(%q("' \\\\ \""=>"\" \\\\ '"))
+  end
+
+  it "should unquote keys and values correctly with combinations of backslashes and quotes" do
+    %q("' \\\\ \""=>"\" \\\\ '").from_hstore.should eq({ %q(' \\ ") => %q(" \\ ') })
   end
 
   it "should convert empty hash" do
