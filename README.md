@@ -106,7 +106,7 @@ Find records where 'foo’ is equal to 'bar’:
 This same sql is at least twice as fast (using indexes) if you do it
 that way:
 
-    Person.where("data > 'foo=>bar'")
+    Person.where("data @> 'foo=>bar'")
 
 Find records where 'foo’ is not equal to 'bar’:
 
