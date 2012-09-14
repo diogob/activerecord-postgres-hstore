@@ -24,7 +24,7 @@ class String
       [k,v].map { |t| 
         case t
         when nil then t
-        when /^"(.*)"$/ then $1.gsub(/\\(.)/, '\1')
+        when /\A"(.*)"\Z/m then $1.gsub(/\\(.)/, '\1')
         else t.gsub(/\\(.)/, '\1')
         end
       }
