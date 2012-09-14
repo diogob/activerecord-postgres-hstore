@@ -1,6 +1,7 @@
 require File.expand_path(File.dirname(__FILE__) + '/spec_helper')
 
 describe "ActiverecordPostgresHstore" do
+
   it "should recognize a valid hstore string" do
     "".valid_hstore?.should be_true
     "a=>b".valid_hstore?.should be_true
@@ -21,37 +22,49 @@ describe "ActiverecordPostgresHstore" do
     '"a"=>"b",Hello?'.valid_hstore?.should be_false
   end
 
-  it "should convert hash to hstore string and back (sort of)" do
-    {:a => 1, :b => 2}.to_hstore.from_hstore.should eq({"a" => "1", "b" => "2"})
+  it "should print a warning if symbol keys are used" do
+    Kernel.should_receive(:warn)
+    {:a => 1}.to_hstore
+  end
+
+  it "should convert hash to hstore string" do
+    {"a" => "alpha", "b" => "bravo"}.to_hstore.should eq('a=>alpha,b=>bravo')
   end
 
   it "should convert hstore string to hash" do
-    '"a"=>"1", "b"=>"2"'.from_hstore.should eq({'a' => '1', 'b' => '2'})
+    '"a"=>"alpha","b"=>"bravo"'.from_hstore.should eq({"a" => "alpha", "b" => "bravo"})
   end
- 
+
+  it "should preserve literal values" do
+    hash = {"a" => 1, "b" => true}
+    hash.to_hstore.from_hstore.should eq(hash)
+  end
+
   it "should quote correctly" do
-    {:a => "'a'"}.to_hstore.should eq(%q(a=>'a'))
+    {"'a'" => "'alpha'"}.to_hstore.should eq("'a'=>'alpha'")
   end
 
-  it "should quote keys correctly" do
-    {"'a'" => "a"}.to_hstore.should eq(%q('a'=>a))
+  it "should store nil as NULL" do
+    {'a' => nil}.to_hstore.should eq("a=>NULL")
   end
 
-  it "should preserve null values on store" do
-    # NULL=>b will be interpreted as the string pair "NULL"=>"b"
-
-    {'a' => nil,nil=>'b'}.to_hstore.should eq(%q(a=>NULL,NULL=>b))
+  it "should retrive NULL (case insensitive) as nil" do
+    "a=>NULL,b=>NuLl".from_hstore.should eq({"a"=>nil,"b"=>nil})
   end
 
-  it "should preserve null values on load" do
-    'a=>null,b=>NuLl,c=>"NuLl",null=>c'.from_hstore.should eq({'a'=>nil,'b'=>nil,'c'=>'NuLl','null'=>'c'})
+  it "should retreive quoted NULL as string" do
+    'a=>"NULL"'.from_hstore.should eq({"a"=>"NULL"})
   end
 
-  it "should quote tokens with nothing space comma equals or greaterthan" do
-    {' '=>''}.to_hstore.should eq(%q(" "=>""))
-    {','=>''}.to_hstore.should eq(%q(","=>""))
-    {'='=>''}.to_hstore.should eq(%q("="=>""))
-    {'>'=>''}.to_hstore.should eq(%q(">"=>""))
+  it "should not allow nil keys" do
+    lambda{ {nil => 'a'}.to_hstore; }.should raise_error
+  end
+
+  it "should quote tokens with space, comma, equals or greaterthan" do
+    {' '=>' '}.to_hstore.should eq(%q(" "=>" "))
+    {','=>','}.to_hstore.should eq(%q(","=>","))
+    {'='=>'='}.to_hstore.should eq(%q("="=>"="))
+    {'>'=>'>'}.to_hstore.should eq(%q(">"=>">"))
   end
 
   it "should unquote keys correctly with single quotes" do
@@ -70,13 +83,49 @@ describe "ActiverecordPostgresHstore" do
     %q("\"a'"=>"b \"a' b").from_hstore.should eq({%q("a') => %q(b "a' b)})
   end
 
-  it "should convert empty hash" do
+  it "should store empty hash" do
     {}.to_hstore.should eq("")
   end
 
-  it "should convert empty string" do
+  it "should retrieve empty string" do
     ''.from_hstore.should eq({})
-    '         '.from_hstore.should eq({})
   end
-  
+
+  it "should retrieve blank string" do
+    '    '.from_hstore.should eq({})
+  end
+
+  # Line breaks
+  it "should not change values with line breaks" do
+    input = { "a" => "foo\nbar" }
+    input.to_hstore.from_hstore.should eq(input)
+  end
+
+  # Nested hashes
+  it "should convert complex hash to hstore string" do
+    hash = {"name" => {"first" => "David", "last" => "Smith"}}
+    hash.to_hstore.should eq(%q(name=>"{first=>David,last=>Smith}"))
+  end
+
+  it "should convert a complex hstore string to a hash" do
+    hash = {"name" => {"first" => "David", "last" => "Smith"}}
+    %q(name=>"{first=>David,last=>Smith}").from_hstore.should eq(hash)
+  end
+
+  # Backslashes
+  it "should quote keys and values correctly with backslashes" do
+    { %q(\\) => %q(\\) }.to_hstore.should eq(%q("\\\\"=>"\\\\"))
+  end
+
+  it "should unquote keys and values correctly with backslashes" do
+    %q("\\\\"=>"\\\\").from_hstore.should eq({ %q(\\) => %q(\\) })
+  end
+
+  it "should quote keys and values correctly with combinations of backslashes and quotes" do
+    { %q(' \\ ") => %q(" \\ ') }.to_hstore.should eq(%q("' \\\\ \""=>"\" \\\\ '"))
+  end
+
+  it "should unquote keys and values correctly with combinations of backslashes and quotes" do
+    %q("' \\\\ \""=>"\" \\\\ '").from_hstore.should eq({ %q(' \\ ") => %q(" \\ ') })
+  end
 end
