@@ -156,6 +156,18 @@ To avoid the above, make sure all named parameters are strings:
 
 Have fun.
 
+Test Database
+-------------
+
+To have hstore enabled when you load your database schema (as happens in rake db:test:prepare), you'll need to
+uncomment or add the following line in config/application.rb
+
+    config.active_record.schema_format = :sql
+
+This will change your schema dumps from Ruby to SQL. If you're
+unsure about the implications of this change, we suggest reading this
+[Rails Guide](http://guides.rubyonrails.org/migrations.html#schema-dumping-and-you).
+
 Help
 ----
 
