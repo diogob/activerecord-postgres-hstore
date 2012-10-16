@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>activerecord-postgres-hstore by softa</title>
+    <title>activerecord-postgres-hstore by engageis</title>
     <link rel="stylesheet" href="stylesheets/styles.css">
     <link rel="stylesheet" href="stylesheets/pygment_trac.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
@@ -24,12 +24,12 @@
       <div id="banner">
         <span id="logo"></span>
 
-        <a href="https://github.com/softa/activerecord-postgres-hstore" class="button fork"><strong>View On GitHub</strong></a>
+        <a href="https://github.com/engageis/activerecord-postgres-hstore" class="button fork"><strong>View On GitHub</strong></a>
         <div class="downloads">
           <span>Downloads:</span>
           <ul>
-            <li><a href="https://github.com/softa/activerecord-postgres-hstore/zipball/master" class="button">ZIP</a></li>
-            <li><a href="https://github.com/softa/activerecord-postgres-hstore/tarball/master" class="button">TAR</a></li>
+            <li><a href="https://github.com/engageis/activerecord-postgres-hstore/zipball/master" class="button">ZIP</a></li>
+            <li><a href="https://github.com/engageis/activerecord-postgres-hstore/tarball/master" class="button">TAR</a></li>
           </ul>
         </div>
       </div><!-- end banner -->
@@ -148,7 +148,7 @@ Find records that contains a key named 'foo’:</p>
 <p>This same sql is at least twice as fast (using indexes) if you do it
 that way:</p>
 
-<pre><code>Person.where("data &gt; 'foo=&gt;bar'")
+<pre><code>Person.where("data @&gt; 'foo=&gt;bar'")
 </code></pre>
 
 <p>Find records where 'foo’ is not equal to 'bar’:</p>
@@ -225,11 +225,11 @@ twitter: <a href="https://twitter.com/#!/dbiazus">@dbiazus</a> or <a href="https
 <p>Copyright © 2010 Juan Maiz. See LICENSE for details.</p>
       </section>
       <footer>
-        <p>Project maintained by <a href="https://github.com/softa">softa</a></p>
+        <p>Project maintained by <a href="https://github.com/engageis">engageis</a></p>
         <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="http://twitter.com/#!/michigangraham">mattgraham</a></small></p>
       </footer>
     </div>
-    <!--[if !IE]><script>fixScale(document);</script><!--<![endif]-->
+    <!--[if !IE]><script>fixScale(document);</script><![endif]-->
     
   </body>
 </html>
