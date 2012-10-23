@@ -21,14 +21,21 @@ class Hash
     return str
   end
 
-  # Generates an hstore string format. This is the format used
-  # to insert or update stuff in the database.
   def to_hstore
     return "" if empty?
 
-    map do |idx, val|
-      "%s=>%s" % [hstore_escape(idx), hstore_escape(val)]
-    end * ","
+    map { |idx, val|
+      iv = [idx,val].map { |_|
+        e = _.to_s.gsub(/"/, '\"')
+        if _.nil?
+          'NULL'
+        else
+          '"%s"' % e
+        end
+      }
+
+      "%s=>%s" % iv
+    } * ","
   end
 
   # If the method from_hstore is called in a Hash, it just returns self.
