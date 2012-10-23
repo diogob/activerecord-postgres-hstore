@@ -28,7 +28,17 @@ describe "ActiverecordPostgresHstore" do
   it "should convert hstore string to hash" do
     '"a"=>"1", "b"=>"2"'.from_hstore.should eq({'a' => '1', 'b' => '2'})
   end
- 
+
+  it "should accept symbols and strings as keys after String#from_hstore call" do
+    '"a"=>"1"'.from_hstore[:a].should eq('1')
+    '"a"=>"1"'.from_hstore['a'].should eq('1')
+  end
+
+  it "should accept symbols and strings as keys after Hash#from_hstore call" do
+    {:a => 'a'}.from_hstore[:a].should eq('a')
+    {:a => 'a'}.from_hstore['a'].should eq('a')
+  end
+
   it "should quote correctly" do
     {:a => "'a'"}.to_hstore.should eq(%q(a=>'a'))
   end
@@ -73,7 +83,7 @@ describe "ActiverecordPostgresHstore" do
   it "should quote keys and values correctly with backslashes" do
     { %q(\\) => %q(\\) }.to_hstore.should eq(%q("\\\\"=>"\\\\"))
   end
-  
+
   it "should unquote keys and values correctly with backslashes" do
     %q("\\\\"=>"\\\\").from_hstore.should eq({ %q(\\) => %q(\\) })
   end
@@ -100,5 +110,5 @@ describe "ActiverecordPostgresHstore" do
     output = input.to_hstore
     output.from_hstore.should eq(input)
   end
-  
+
 end

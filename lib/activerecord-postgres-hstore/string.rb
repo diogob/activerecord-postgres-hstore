@@ -21,7 +21,7 @@ class String
   def from_hstore
     token_pairs = (scan(hstore_pair)).map { |k,v| [k,v =~ /^NULL$/i ? nil : v] }
     token_pairs = token_pairs.map { |k,v|
-      [k,v].map { |t| 
+      [k,v].map { |t|
         case t
         when nil then t
         when /\A"(.*)"\Z/m then $1.gsub(/\\(.)/, '\1')
@@ -29,7 +29,7 @@ class String
         end
       }
     }
-    Hash[ token_pairs ]
+    ActiveSupport::HashWithIndifferentAccess.new(Hash[token_pairs])
   end
 
   private
