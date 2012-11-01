@@ -25,7 +25,7 @@ Notes for Rails 3.1 and above
 The master branch already support a custom serialization coder.
 If you want to use it just put in your Gemfile:
 
-    gem 'activerecord-postgres-hstore', git: 'git://github.com/softa/activerecord-postgres-hstore.git'
+    gem 'activerecord-postgres-hstore', git: 'git://github.com/engageis/activerecord-postgres-hstore.git'
 
 If you install them gem from the master branch you also have to insert a
 line in each model that uses hstore.
