@@ -1,14 +1,19 @@
 require 'rails'
 require 'rails/generators'
 require 'rails/generators/migration'
-require 'pg'
+
+if RUBY_PLATFORM == "jruby"
+  require 'activerecord-jdbcpostgresql-adapter'
+else
+  require 'pg'
+end
 
 # = Hstore Railtie
 #
 # Creates a new railtie for 2 reasons:
 #
 # * Initialize ActiveRecord properly
-# * Add hstore:setup generator 
+# * Add hstore:setup generator
 class Hstore < Rails::Railtie
 
   initializer 'activerecord-postgres-hstore' do
