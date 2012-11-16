@@ -1,7 +1,8 @@
 source 'http://rubygems.org'
 
 gem 'rails', '3.0.0'
-gem 'pg'
+gem 'pg', :platforms => :ruby
+gem 'activerecord-jdbcpostgresql-adapter', :platforms => :jruby
 gem 'activerecord-postgres-hstore', :path => '../'
 
 # Use unicorn as the web server

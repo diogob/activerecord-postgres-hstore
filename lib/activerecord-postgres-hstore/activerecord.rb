@@ -133,7 +133,7 @@ module ActiveRecord
 
     end
 
-    class PostgreSQLColumn < Column
+    class PostgreSQLColumn
       # Does the type casting from hstore columns using String#from_hstore or Hash#from_hstore.
       def type_cast_code_with_hstore(var_name)
         type == :hstore ? "#{var_name}.from_hstore" : type_cast_code_without_hstore(var_name)
@@ -148,7 +148,7 @@ module ActiveRecord
       alias_method_chain :simplified_type, :hstore
     end
 
-    class PostgreSQLAdapter < AbstractAdapter
+    class PostgreSQLAdapter
       def native_database_types_with_hstore
         native_database_types_without_hstore.merge({:hstore => { :name => "hstore" }})
       end
