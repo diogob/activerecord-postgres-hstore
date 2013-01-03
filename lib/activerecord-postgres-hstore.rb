@@ -1,4 +1,11 @@
 require 'active_support'
+
+if RUBY_PLATFORM == "jruby"
+  require 'activerecord-jdbcpostgresql-adapter'
+else
+  require 'pg'
+end
+
 if defined? Rails
   require "activerecord-postgres-hstore/railties"
 else

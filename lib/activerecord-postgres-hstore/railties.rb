@@ -2,12 +2,6 @@ require 'rails'
 require 'rails/generators'
 require 'rails/generators/migration'
 
-if RUBY_PLATFORM == "jruby"
-  require 'activerecord-jdbcpostgresql-adapter'
-else
-  require 'pg'
-end
-
 # = Hstore Railtie
 #
 # Creates a new railtie for 2 reasons:
