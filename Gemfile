@@ -4,7 +4,6 @@ gem 'rails'
 gem 'rake'
 
 gem 'pg', :platforms => :ruby
-gem 'activerecord-jdbcpostgresql-adapter', :platforms => :jruby
 
 # Add dependencies to develop your gem here.
 # Include everything needed to run rake, tests, features, etc.
@@ -14,4 +13,5 @@ group :development, :test do
   gem "jeweler", "~> 1.8.3"
   gem "rdoc"
   gem "rspec"
+  gem 'activerecord-jdbcpostgresql-adapter', :platforms => :jruby
 end
