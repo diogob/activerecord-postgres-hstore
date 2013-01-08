@@ -3,8 +3,6 @@ source "http://rubygems.org"
 gem 'rails'
 gem 'rake'
 
-gem 'pg', :platforms => :ruby
-
 # Add dependencies to develop your gem here.
 # Include everything needed to run rake, tests, features, etc.
 group :development, :test do
@@ -14,4 +12,5 @@ group :development, :test do
   gem "rdoc"
   gem "rspec"
   gem 'activerecord-jdbcpostgresql-adapter', :platforms => :jruby
+  gem 'pg', :platforms => :ruby
 end
