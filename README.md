@@ -159,8 +159,13 @@ Have fun.
 Test Database
 -------------
 
-To have hstore enabled when you load your database schema (as happens in rake db:test:prepare), you'll need to
-uncomment or add the following line in config/application.rb
+To have hstore enabled when you load your database schema (as happens in rake db:test:prepare), you
+have two options.
+
+The first option is creating a template database with hstore installed and set the template option
+in database.yml to that database.
+
+The second option is to uncomment or add the following line in config/application.rb
 
     config.active_record.schema_format = :sql
 
