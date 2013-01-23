@@ -1,9 +1,7 @@
-# encoding: utf-8
-
+# -*- encoding: utf-8 -*-
+$:.unshift File.expand_path("../lib", __FILE__)
+require 'bundler/gem_tasks'
 require 'rubygems'
-require 'bundler'
-require 'rake'
-require 'jeweler'
 require 'rspec/core/rake_task'
 require 'rdoc/task'
 
@@ -24,19 +22,6 @@ RSpec::Core::RakeTask.new(:coverage) do |t|
   t.rcov = true
   t.rcov_opts = ['--exclude', 'spec']
 end
-
-Jeweler::Tasks.new do |gem|
-  # gem is a Gem::Specification... see http://docs.rubygems.org/read/chapter/20 for more options
-  gem.name = "activerecord-postgres-hstore"
-  gem.summary = %Q{Goodbye serialize, hello hstore}
-  gem.description = %Q{This gem adds support for the postgres hstore type. It is the _just right_ alternative for storing hashes instead of using seralization or dynamic tables.}
-  gem.email = "juanmaiz@gmail.com"
-  gem.homepage = "http://github.com/softa/activerecord-postgres-hstore"
-  gem.authors = ["Juan Maiz", "Diogo Biazus"]
-  gem.license = "MIT"
-  # dependencies defined in Gemfile
-end
-Jeweler::RubygemsDotOrgTasks.new
 
 RDoc::Task.new do |rdoc|
   version = File.exist?('VERSION') ? File.read('VERSION') : ""
