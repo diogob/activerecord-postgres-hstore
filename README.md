@@ -12,12 +12,15 @@ You need dynamic columns in your tables. What do you do?
 Requirements
 ------------
 
-Postgresql 8.4+ (also tested with 9.0) with contrib and Rails 3. (It
+Postgresql 8.4+ with contrib and Rails 3+. (It
 might work on 2.3.x with minor patches…)
-On Ubuntu, this is easy: `sudo apt-get install postgresql-contrib-9.0`
+On Ubuntu, this is easy: `sudo apt-get install postgresql-contrib-9.1`
 
-On Mac <del> …you are screwed. Use a VM.  </del> you should use [the binary package kindly provided by EnterpriseDB](http://www.enterprisedb.com/products-services-training/pgdownload#osx)
-[Homebrew’s](https://github.com/mxcl/homebrew) Postgres installation also includes the contrib packages: `brew install postgres`
+On Mac you have a couple of options:
+
+* [the binary package kindly provided by EnterpriseDB](http://www.enterprisedb.com/products-services-training/pgdownload#osx)
+* [Homebrew’s](https://github.com/mxcl/homebrew) Postgres installation also includes the contrib packages: `brew install postgres`
+* [Postgres.app](http://postgresapp.com/)
 
 Notes for Rails 3.1 and above
 -----------------------------
