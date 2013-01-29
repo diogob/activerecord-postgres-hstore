@@ -20,4 +20,8 @@ describe "ActiverecordCodersHstore" do
   it 'should dump the default given nil' do
     ActiveRecord::Coders::Hstore.new({'a'=>'a'}).dump(nil).should == {'a'=>'a'}.to_hstore
   end
+
+  it 'should load the default given nil' do
+    ActiveRecord::Coders::Hstore.new({'a'=>'a'}).load(nil).should eql({'a'=>'a'})
+  end
 end
