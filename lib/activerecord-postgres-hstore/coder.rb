@@ -18,7 +18,7 @@ module ActiveRecord
       end
 
       def load(hstore)
-        hstore.nil? ? nil : hstore.from_hstore
+        hstore.nil? ? @default : hstore.from_hstore
       end
     end
   end
