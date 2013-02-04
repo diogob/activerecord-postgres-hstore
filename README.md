@@ -1,7 +1,4 @@
-[![Build Status](https://secure.travis-ci.org/softa/activerecord-postgres-hstore.png?branch=master)](http://travis-ci.org/softa/activerecord-postgres-hstore)
-
-Goodbye serialize, hello hstore.
---------------------------------
+#Goodbye serialize, hello hstore. [![Build Status](https://secure.travis-ci.org/softa/activerecord-postgres-hstore.png?branch=master)](http://travis-ci.org/softa/activerecord-postgres-hstore)
 
 You need dynamic columns in your tables. What do you do?
 
@@ -9,16 +6,18 @@ You need dynamic columns in your tables. What do you do?
 * Use a noSQL database just for this issue. Good luck.
 * Create a serialized column. Nice, insertion will be fine, and reading data from a record too. But, what if you have a condition in your select that includes serialized data? Yeah, regular expressions.
 
-Note about 0.7
---------------
+##Note about 0.7
+
 I have decided to clean up the old code and provide only a custom serializer in this new version.
+
 In order to acomplish this I had to drop support for older versions of Rails (3.0 and earlier) and also
 remove some monkey patches that added functionality to the Hash, String, and some ActiveRecord objects.
 This monkey patches provided methods such as Hash\#to\_hstore and String\#from\_hstore.
-If you rely on this feature please stick to 0.6 version and there is still a branch named 0.6 to which you can submit your pull requests.
 
-Requirements
-------------
+
+**If you rely on this feature please stick to 0.6 version** and there is still a branch named 0.6 to which you can submit your pull requests.
+
+##Requirements
 
 Postgresql 8.4+ with contrib and Rails 3.1+ (If you want to try on older rails versions I recommend the 0.6 and ealier versions of this gem)
 On Ubuntu, this is easy: `sudo apt-get install postgresql-contrib-9.1`
@@ -29,8 +28,8 @@ On Mac you have a couple of options:
 * [Homebrew’s](https://github.com/mxcl/homebrew) Postgres installation also includes the contrib packages: `brew install postgres`
 * [Postgres.app](http://postgresapp.com/)
 
-Install
--------
+##Install
+
 
 Hstore is a PostgreSQL contrib type, [check it out first](http://www.postgresql.org/docs/9.2/static/hstore.html).
 
@@ -77,8 +76,7 @@ end
 To understand the difference between the two types of indexes take a
 look at [PostgreSQL docs](http://www.postgresql.org/docs/9.2/static/textsearch-indexes.html).
 
-Usage
------
+##Usage
 
 This gem only provides a custom serialization coder.
 If you want to use it just put in your Gemfile:
@@ -116,8 +114,8 @@ writing to the attribute, or else you will get an error:
 
     NoMethodError: undefined method `[]=' for nil:NilClass
 
-Querying the database
----------------------
+###Querying the database
+
 Now you just need to learn a little bit of new
 sqls for selecting stuff (creating and updating is transparent).
 Find records that contains a key named 'foo’:
@@ -165,8 +163,7 @@ and with many keys:
 
     Person.delete_keys(:data, :foo, :bar)
 
-Caveats
--------
+##Caveats
 
 hstore keys and values have to be strings. This means `true` will become `"true"` and `42` will become `"42"` after you save the record. Only `nil` values are preserved.
 
@@ -181,8 +178,7 @@ To avoid the above, make sure all named parameters are strings:
 
 Have fun.
 
-Test Database
--------------
+##Test Database
 
 To have hstore enabled when you load your database schema (as happens in rake db:test:prepare), you
 have two options.
@@ -198,14 +194,13 @@ This will change your schema dumps from Ruby to SQL. If you're
 unsure about the implications of this change, we suggest reading this
 [Rails Guide](http://guides.rubyonrails.org/migrations.html#schema-dumping-and-you).
 
-Help
-----
+##Help
 
 You can use issues in github for that. Or else you can reach us at
 twitter: [@dbiazus](https://twitter.com/#!/dbiazus) or [@joaomilho](https://twitter.com/#!/joaomilho)
 
-Note on Patches/Pull Requests
------------------------------
+##Note on Patches/Pull Requests
+
 
 * Fork the project.
 * Make your feature addition or bug fix.
@@ -213,7 +208,6 @@ Note on Patches/Pull Requests
 * Commit, do not mess with rakefile, version, or history.  (if you want to have your own version, that is fine but bump version in a commit by itself I can ignore when I pull)
 * Send me a pull request. Bonus points for topic branches.
 
-Copyright
----------
+##Copyright
 
 Copyright © 2010 Juan Maiz. See LICENSE for details.
