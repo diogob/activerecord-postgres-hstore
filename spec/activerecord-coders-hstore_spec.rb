@@ -48,6 +48,11 @@ describe ActiveRecord::Coders::Hstore do
       it{ should eql('"a"=>"a"') }
     end
 
+    context 'when key and value have dollar sign char' do
+      let(:value){ {"foo$bar" => "$ 5.00"} }
+      it{ should eql("\"foo$bar\"=>\"$ 5.00\"") }
+    end
+
     context 'when key and value have newline char' do
       let(:value){ {"foo\nbar" => "\nnewline"} }
       it{ should eql("\"foo\nbar\"=>\"\nnewline\"") }

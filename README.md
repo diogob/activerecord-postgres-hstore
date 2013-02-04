@@ -58,9 +58,13 @@ Finally you can create your own tables using hstore type. It’s easy:
 You’re done.
 Well, not yet. Don’t forget to add indexes. Like this:
 
-```sql CREATE INDEX people_gist_data ON people USING GIST(data);```
+```sql
+CREATE INDEX people_gist_data ON people USING GIST(data);
+```
 or
-```sql CREATE INDEX people_gin_data ON people USING GIN(data);```
+```sql 
+CREATE INDEX people_gin_data ON people USING GIN(data);
+```
 
 This gem provides some functions to generate this kind of index inside your migrations.
 For the model Person we could create an index (defaults to type GIST) over the data field with this migration:
