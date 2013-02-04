@@ -9,6 +9,26 @@ describe ActiveRecord::Coders::Hstore do
       it{ should eql({'a'=>'a'}) }
     end
 
+    context 'when key and value have newline char' do
+      let(:value){ "\"foo\nbar\"=>\"\nnewline\"" }
+      it{ should eql({"foo\nbar" => "\nnewline"}) }
+    end
+
+    context 'when key and value are empty strings' do
+      let(:value){ %q(""=>"") }
+      it{ should eql({'' => ''}) }
+    end
+
+    context 'when value has single quotes' do
+      let(:value){ %q("'a'"=>"'a'") }
+      it{ should eql({"'a'" => "'a'"}) }
+    end
+
+    context 'when value is empty hash' do
+      let(:value){ '' }
+      it{ should eql({}) }
+    end
+
     context 'when value is nil' do
       let(:value){ nil }
       it { should be_nil }
@@ -25,7 +45,27 @@ describe ActiveRecord::Coders::Hstore do
 
     context 'when value is nil and we have a default in the constructor' do
       subject{ ActiveRecord::Coders::Hstore.new({'a'=>'a'}).dump(nil) }
-      it{ should eql({'a'=>'a'}.to_hstore) }
+      it{ should eql('"a"=>"a"') }
+    end
+
+    context 'when key and value have newline char' do
+      let(:value){ {"foo\nbar" => "\nnewline"} }
+      it{ should eql("\"foo\nbar\"=>\"\nnewline\"") }
+    end
+
+    context 'when key and value are empty strings' do
+      let(:value){ {'' => ''} }
+      it{ should eql(%q(""=>"")) }
+    end
+
+    context 'when value has single quotes' do
+      let(:value){ {"'a'" => "'a'"} }
+      it{ should eql(%q("'a'"=>"'a'")) }
+    end
+
+    context 'when value is empty hash' do
+      let(:value){ {} }
+      it{ should eql('') }
     end
 
     context 'when value is nil' do
@@ -35,7 +75,7 @@ describe ActiveRecord::Coders::Hstore do
 
     context "when value is an hstore" do
       let(:value){ {'a' => 'a'} }
-      it{ should eql(value.to_hstore) }
+      it{ should eql('"a"=>"a"') }
     end
   end
 
@@ -60,7 +100,7 @@ describe ActiveRecord::Coders::Hstore do
       ActiveRecord::Coders::Hstore.should_receive(:new).and_return(instance)
     end
 
-    it("should instantiate and call load") do
+    it("should instantiate and call dump") do
       ActiveRecord::Coders::Hstore.dump(@parameter)
     end
   end

@@ -9,11 +9,18 @@ You need dynamic columns in your tables. What do you do?
 * Use a noSQL database just for this issue. Good luck.
 * Create a serialized column. Nice, insertion will be fine, and reading data from a record too. But, what if you have a condition in your select that includes serialized data? Yeah, regular expressions.
 
+Note about 0.7
+--------------
+I have decided to clean up the old code and provide only a custom serializer in this new version.
+In order to acomplish this I had to drop support for older versions of Rails (3.0 and earlier) and also
+remove some monkey patches that added functionality to the Hash, String, and some ActiveRecord objects.
+This monkey patches provided methods such as Hash\#to\_hstore and String\#from\_hstore.
+If you rely on this feature please stick to 0.6 version and there is still a branch named 0.6 to which you can submit your pull requests.
+
 Requirements
 ------------
 
-Postgresql 8.4+ with contrib and Rails 3+. (It
-might work on 2.3.x with minor patches…)
+Postgresql 8.4+ with contrib and Rails 3.1+ (If you want to try on older rails versions I recommend the 0.6 and ealier versions of this gem)
 On Ubuntu, this is easy: `sudo apt-get install postgresql-contrib-9.1`
 
 On Mac you have a couple of options:
@@ -21,42 +28,6 @@ On Mac you have a couple of options:
 * [the binary package kindly provided by EnterpriseDB](http://www.enterprisedb.com/products-services-training/pgdownload#osx)
 * [Homebrew’s](https://github.com/mxcl/homebrew) Postgres installation also includes the contrib packages: `brew install postgres`
 * [Postgres.app](http://postgresapp.com/)
-
-Notes for Rails 3.1 and above
------------------------------
-
-The master branch already support a custom serialization coder.
-If you want to use it just put in your Gemfile:
-
-    gem 'activerecord-postgres-hstore', github: 'engageis/activerecord-postgres-hstore'
-
-If you install them gem from the master branch you also have to insert a
-line in each model that uses hstore.
-Assuming a model called **Person**, with a **data** field on it, the
-code should look like:
-
-    class Person < ActiveRecord::Base
-      serialize :data, ActiveRecord::Coders::Hstore
-    end
-
-If you want a default value (say, an empty hash) you should pass it as an argument when you
-initialize the serializer, like so:
-
-    class Person < ActiveRecord::Base
-      serialize :data, ActiveRecord::Coders::Hstore.new({})
-    end
-
-This way, you will automatically start with an empty hash that you can write attributes to.
-
-    irb(main):001:0> person = Person.new
-    => #<Person id: nil, name: nil, data: {}, created_at: nil, updated_at: nil>
-    irb(main):002:0> person.data['favorite_color'] = 'blue'
-    => "blue"
-
-If you skip this step, you will have to manually initialize the value to an empty hash before
-writing to the attribute, or else you will get an error:
-
-    NoMethodError: undefined method `[]=' for nil:NilClass
 
 Install
 -------
@@ -70,23 +41,6 @@ Then, just add this to your Gemfile:
 And run your bundler:
 
 `bundle install`
-
-Make sure that you have the desired database, if not create it as the
-desired user:
-
-`createdb hstorage_dev`
-
-Add the parameters to your database.yml (these are system dependant),
-e.g.:
-
-    development:
-      adapter: postgresql
-      host: 127.0.0.1
-      database: hstorage_dev
-      encoding: unicode
-      username: postgres
-      password:
-      pool: 5
 
 Now you need to create a migration that adds hstore support for your
 PostgreSQL database:
@@ -105,9 +59,20 @@ Finally you can create your own tables using hstore type. It’s easy:
 You’re done.
 Well, not yet. Don’t forget to add indexes. Like this:
 
-`CREATE INDEX people_gist_data ON people USING GIST(data);`
+```sql CREATE INDEX people_gist_data ON people USING GIST(data);```
 or
-`CREATE INDEX people_gin_data ON people USING GIN(data);`
+```sql CREATE INDEX people_gin_data ON people USING GIN(data);```
+
+This gem provides some functions to generate this kind of index inside your migrations.
+For the model Person we could create an index (defaults to type GIST) over the data field with this migration:
+
+```ruby
+class AddIndexToPeople < ActiveRecord::Migration
+  def change
+    add_hstore_index :people, :data                                                                                                                                
+  end 
+end
+```
 
 To understand the difference between the two types of indexes take a
 look at [PostgreSQL docs](http://www.postgresql.org/docs/9.2/static/textsearch-indexes.html).
@@ -115,7 +80,45 @@ look at [PostgreSQL docs](http://www.postgresql.org/docs/9.2/static/textsearch-i
 Usage
 -----
 
-Once you have it installed, you just need to learn a little bit of new
+This gem only provides a custom serialization coder.
+If you want to use it just put in your Gemfile:
+
+    gem 'activerecord-postgres-hstore'
+
+Now add a line (for each hstore column) on the model you have your hstore columns.
+Assuming a model called **Person**, with a **data** field on it, the
+code should look like:
+
+```ruby
+class Person < ActiveRecord::Base
+  serialize :data, ActiveRecord::Coders::Hstore
+end
+```
+
+If you want a default value (say, an empty hash) you should pass it as an argument when you
+initialize the serializer, like so:
+
+```ruby
+class Person < ActiveRecord::Base
+  serialize :data, ActiveRecord::Coders::Hstore.new({})
+end
+```
+
+This way, you will automatically start with an empty hash that you can write attributes to.
+
+    irb(main):001:0> person = Person.new
+    => #<Person id: nil, name: nil, data: {}, created_at: nil, updated_at: nil>
+    irb(main):002:0> person.data['favorite_color'] = 'blue'
+    => "blue"
+
+If you skip this step, you will have to manually initialize the value to an empty hash before
+writing to the attribute, or else you will get an error:
+
+    NoMethodError: undefined method `[]=' for nil:NilClass
+
+Querying the database
+---------------------
+Now you just need to learn a little bit of new
 sqls for selecting stuff (creating and updating is transparent).
 Find records that contains a key named 'foo’:
 
