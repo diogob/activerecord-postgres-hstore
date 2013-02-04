@@ -39,9 +39,8 @@
         <ul></ul>
       </nav>
       <section>
-        <p><a href="http://travis-ci.org/softa/activerecord-postgres-hstore"><img src="https://secure.travis-ci.org/softa/activerecord-postgres-hstore.png?branch=master" alt="Build Status"></a></p>
-
-<h2>Goodbye serialize, hello hstore.</h2>
+        <h1>Goodbye serialize, hello hstore. <a href="http://travis-ci.org/softa/activerecord-postgres-hstore"><img src="https://secure.travis-ci.org/softa/activerecord-postgres-hstore.png?branch=master" alt="Build Status"></a>
+</h1>
 
 <p>You need dynamic columns in your tables. What do you do?</p>
 
@@ -49,34 +48,30 @@
 <li>Create lots of tables to handle it. Nice, now you’ll need more models and lots of additional sqls. Insertion and selection will be slow as hell.</li>
 <li>Use a noSQL database just for this issue. Good luck.</li>
 <li>Create a serialized column. Nice, insertion will be fine, and reading data from a record too. But, what if you have a condition in your select that includes serialized data? Yeah, regular expressions.</li>
-</ul><h2>Requirements</h2>
+</ul><h2>Note about 0.7</h2>
 
-<p>Postgresql 8.4+ (also tested with 9.0) with contrib and Rails 3. (It
-might work on 2.3.x with minor patches…)
-On Ubuntu, this is easy: <code>sudo apt-get install postgresql-contrib-9.0</code></p>
+<p>I have decided to clean up the old code and provide only a custom serializer in this new version.</p>
 
-<p>On Mac <del> …you are screwed. Use a VM.  </del> you should use <a href="http://www.enterprisedb.com/products-services-training/pgdownload#osx">the binary package kindly provided by EnterpriseDB</a>
-<a href="https://github.com/mxcl/homebrew">Homebrew’s</a> Postgres installation also includes the contrib packages: <code>brew install postgres</code></p>
+<p>In order to acomplish this I had to drop support for older versions of Rails (3.0 and earlier) and also
+remove some monkey patches that added functionality to the Hash, String, and some ActiveRecord objects.
+This monkey patches provided methods such as Hash#to_hstore and String#from_hstore.</p>
 
-<h2>Notes for Rails 3.1 and above</h2>
+<p><strong>If you rely on this feature please stick to 0.6 version</strong> and there is still a branch named 0.6 to which you can submit your pull requests.</p>
 
-<p>The master branch already support a custom serialization coder.
-If you want to use it just put in your Gemfile:</p>
+<h2>Requirements</h2>
 
-<pre><code>gem 'activerecord-postgres-hstore', git: 'git://github.com/softa/activerecord-postgres-hstore.git'
-</code></pre>
+<p>Postgresql 8.4+ with contrib and Rails 3.1+ (If you want to try on older rails versions I recommend the 0.6 and ealier versions of this gem)
+On Ubuntu, this is easy: <code>sudo apt-get install postgresql-contrib-9.1</code></p>
 
-<p>If you install them gem from the master branch you also have to insert a
-line in each model that uses hstore.
-Assuming a model called <strong>Person</strong>, with a <strong>data</strong> field on it, the
-code should look like:</p>
+<p>On Mac you have a couple of options:</p>
 
-<pre><code>class Person &lt; ActiveRecord::Base
-  serialize :data, ActiveRecord::Coders::Hstore
-end
-</code></pre>
-
-<h2>Install</h2>
+<ul>
+<li><a href="http://www.enterprisedb.com/products-services-training/pgdownload#osx">the binary package kindly provided by EnterpriseDB</a></li>
+<li>
+<a href="https://github.com/mxcl/homebrew">Homebrew’s</a> Postgres installation also includes the contrib packages: <code>brew install postgres</code>
+</li>
+<li><a href="http://postgresapp.com/">Postgres.app</a></li>
+</ul><h2>Install</h2>
 
 <p>Hstore is a PostgreSQL contrib type, <a href="http://www.postgresql.org/docs/9.2/static/hstore.html">check it out first</a>.</p>
 
@@ -87,24 +82,6 @@ end
 <p>And run your bundler:</p>
 
 <p><code>bundle install</code></p>
-
-<p>Make sure that you have the desired database, if not create it as the
-desired user:</p>
-
-<p><code>createdb hstorage_dev</code></p>
-
-<p>Add the parameters to your database.yml (these are system dependant),
-e.g.:</p>
-
-<pre><code>development:
-  adapter: postgresql
-  host: 127.0.0.1
-  database: hstorage_dev
-  encoding: unicode
-  username: postgres
-  password:
-  pool: 5
-</code></pre>
 
 <p>Now you need to create a migration that adds hstore support for your
 PostgreSQL database:</p>
@@ -124,16 +101,65 @@ rake db:migrate
 <p>You’re done.
 Well, not yet. Don’t forget to add indexes. Like this:</p>
 
-<p><code>CREATE INDEX people_gist_data ON people USING GIST(data);</code>
+<p><code>sql CREATE INDEX people_gist_data ON people USING GIST(data);</code>
 or
-<code>CREATE INDEX people_gin_data ON people USING GIN(data);</code></p>
+<code>sql CREATE INDEX people_gin_data ON people USING GIN(data);</code></p>
+
+<p>This gem provides some functions to generate this kind of index inside your migrations.
+For the model Person we could create an index (defaults to type GIST) over the data field with this migration:</p>
+
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">AddIndexToPeople</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span>
+  <span class="k">def</span> <span class="nf">change</span>
+    <span class="n">add_hstore_index</span> <span class="ss">:people</span><span class="p">,</span> <span class="ss">:data</span>                                                                                                                                
+  <span class="k">end</span> 
+<span class="k">end</span>
+</pre></div>
 
 <p>To understand the difference between the two types of indexes take a
 look at <a href="http://www.postgresql.org/docs/9.2/static/textsearch-indexes.html">PostgreSQL docs</a>.</p>
 
 <h2>Usage</h2>
 
-<p>Once you have it installed, you just need to learn a little bit of new
+<p>This gem only provides a custom serialization coder.
+If you want to use it just put in your Gemfile:</p>
+
+<pre><code>gem 'activerecord-postgres-hstore'
+</code></pre>
+
+<p>Now add a line (for each hstore column) on the model you have your hstore columns.
+Assuming a model called <strong>Person</strong>, with a <strong>data</strong> field on it, the
+code should look like:</p>
+
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">Person</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">serialize</span> <span class="ss">:data</span><span class="p">,</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Coders</span><span class="o">::</span><span class="no">Hstore</span>
+<span class="k">end</span>
+</pre></div>
+
+<p>If you want a default value (say, an empty hash) you should pass it as an argument when you
+initialize the serializer, like so:</p>
+
+<div class="highlight"><pre><span class="k">class</span> <span class="nc">Person</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
+  <span class="n">serialize</span> <span class="ss">:data</span><span class="p">,</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Coders</span><span class="o">::</span><span class="no">Hstore</span><span class="o">.</span><span class="n">new</span><span class="p">({})</span>
+<span class="k">end</span>
+</pre></div>
+
+<p>This way, you will automatically start with an empty hash that you can write attributes to.</p>
+
+<pre><code>irb(main):001:0&gt; person = Person.new
+=&gt; #&lt;Person id: nil, name: nil, data: {}, created_at: nil, updated_at: nil&gt;
+irb(main):002:0&gt; person.data['favorite_color'] = 'blue'
+=&gt; "blue"
+</code></pre>
+
+<p>If you skip this step, you will have to manually initialize the value to an empty hash before
+writing to the attribute, or else you will get an error:</p>
+
+<pre><code>NoMethodError: undefined method `[]=' for nil:NilClass
+</code></pre>
+
+<h3>Querying the database</h3>
+
+<p>Now you just need to learn a little bit of new
 sqls for selecting stuff (creating and updating is transparent).
 Find records that contains a key named 'foo’:</p>
 
@@ -206,6 +232,23 @@ that way:</p>
 </code></pre>
 
 <p>Have fun.</p>
+
+<h2>Test Database</h2>
+
+<p>To have hstore enabled when you load your database schema (as happens in rake db:test:prepare), you
+have two options.</p>
+
+<p>The first option is creating a template database with hstore installed and set the template option
+in database.yml to that database.</p>
+
+<p>The second option is to uncomment or add the following line in config/application.rb</p>
+
+<pre><code>config.active_record.schema_format = :sql
+</code></pre>
+
+<p>This will change your schema dumps from Ruby to SQL. If you're
+unsure about the implications of this change, we suggest reading this
+<a href="http://guides.rubyonrails.org/migrations.html#schema-dumping-and-you">Rails Guide</a>.</p>
 
 <h2>Help</h2>
 
