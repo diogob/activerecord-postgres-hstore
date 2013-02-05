@@ -4,13 +4,13 @@ $:.unshift lib unless $:.include?(lib)
 
 Gem::Specification.new do |s|
   s.name = "activerecord-postgres-hstore"
-  s.version = "0.7.0"
+  s.version = "0.7.1"
 
   s.platform    = Gem::Platform::RUBY
   s.license     = "MIT"
   s.authors     = ["Juan Maiz", "Diogo Biazus"]
   s.email       = "juanmaiz@gmail.com"
-  s.homepage    = "http://github.com/softa/activerecord-postgres-hstore"
+  s.homepage    = "http://github.com/engageis/activerecord-postgres-hstore"
   s.summary     = "Goodbye serialize, hello hstore"
   s.description = "This gem adds support for the postgres hstore type. It is the _just right_ alternative for storing hashes instead of using seralization or dynamic tables."
   s.required_ruby_version     = ">= 1.8.7"
