@@ -1,0 +1,10 @@
+unreleased
+
+* Bug fixes
+
+  * Properly quote/escape double quotes https://github.com/engageis/activerecord-postgres-hstore/issues/78
+
+* Enhancements
+
+  * Delegate hstore dumping/loading to https://github.com/seamusabshere/pg-hstore
+  * Add a CHANGELOG!
