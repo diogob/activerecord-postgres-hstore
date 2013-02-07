@@ -4,11 +4,11 @@ module ActiveRecord
   module Coders
     class Hstore
       def self.load(hstore)
-        new.load(hstore)
+        new({}).load(hstore)
       end
 
       def self.dump(hstore)
-        new.dump(hstore)
+        new({}).dump(hstore)
       end
 
       def initialize(default=nil)
