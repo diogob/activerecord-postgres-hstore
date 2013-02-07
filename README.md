@@ -97,26 +97,12 @@ class Person < ActiveRecord::Base
 end
 ```
 
-If you want a default value (say, an empty hash) you should pass it as an argument when you
-initialize the serializer, like so:
-
-```ruby
-class Person < ActiveRecord::Base
-  serialize :data, ActiveRecord::Coders::Hstore.new({})
-end
-```
-
 This way, you will automatically start with an empty hash that you can write attributes to.
 
     irb(main):001:0> person = Person.new
     => #<Person id: nil, name: nil, data: {}, created_at: nil, updated_at: nil>
     irb(main):002:0> person.data['favorite_color'] = 'blue'
     => "blue"
-
-If you skip this step, you will have to manually initialize the value to an empty hash before
-writing to the attribute, or else you will get an error:
-
-    NoMethodError: undefined method `[]=' for nil:NilClass
 
 ###Querying the database
 

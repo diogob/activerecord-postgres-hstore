@@ -1,3 +1,9 @@
+0.7.3 / 2013-02-07
+
+* Enhancements
+  * Always use empty hash as default value
+
+
 0.7.2 / 2013-02-07
 
 * Bug fixes
