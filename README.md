@@ -1,4 +1,4 @@
-#Goodbye serialize, hello hstore. [![Build Status](https://secure.travis-ci.org/softa/activerecord-postgres-hstore.png?branch=master)](http://travis-ci.org/softa/activerecord-postgres-hstore)
+#Goodbye serialize, hello hstore. [![Build Status](https://secure.travis-ci.org/engageis/activerecord-postgres-hstore.png?branch=master)](http://travis-ci.org/engageis/activerecord-postgres-hstore)
 
 You need dynamic columns in your tables. What do you do?
 
