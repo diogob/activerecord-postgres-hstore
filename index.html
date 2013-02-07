@@ -101,16 +101,20 @@ rake db:migrate
 <p>You’re done.
 Well, not yet. Don’t forget to add indexes. Like this:</p>
 
-<p><code>sql CREATE INDEX people_gist_data ON people USING GIST(data);</code>
-or
-<code>sql CREATE INDEX people_gin_data ON people USING GIN(data);</code></p>
+<div class="highlight"><pre><span class="k">CREATE</span> <span class="k">INDEX</span> <span class="n">people_gist_data</span> <span class="k">ON</span> <span class="n">people</span> <span class="k">USING</span> <span class="n">GIST</span><span class="p">(</span><span class="k">data</span><span class="p">);</span>
+</pre></div>
+
+<p>or</p>
+
+<div class="highlight"><pre><span class="k">CREATE</span> <span class="k">INDEX</span> <span class="n">people_gin_data</span> <span class="k">ON</span> <span class="n">people</span> <span class="k">USING</span> <span class="n">GIN</span><span class="p">(</span><span class="k">data</span><span class="p">);</span>
+</pre></div>
 
 <p>This gem provides some functions to generate this kind of index inside your migrations.
 For the model Person we could create an index (defaults to type GIST) over the data field with this migration:</p>
 
 <div class="highlight"><pre><span class="k">class</span> <span class="nc">AddIndexToPeople</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Migration</span>
   <span class="k">def</span> <span class="nf">change</span>
-    <span class="n">add_hstore_index</span> <span class="ss">:people</span><span class="p">,</span> <span class="ss">:data</span>                                                                                                                                
+    <span class="n">add_hstore_index</span> <span class="ss">:people</span><span class="p">,</span> <span class="ss">:data</span>
   <span class="k">end</span> 
 <span class="k">end</span>
 </pre></div>
@@ -135,26 +139,12 @@ code should look like:</p>
 <span class="k">end</span>
 </pre></div>
 
-<p>If you want a default value (say, an empty hash) you should pass it as an argument when you
-initialize the serializer, like so:</p>
-
-<div class="highlight"><pre><span class="k">class</span> <span class="nc">Person</span> <span class="o">&lt;</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Base</span>
-  <span class="n">serialize</span> <span class="ss">:data</span><span class="p">,</span> <span class="no">ActiveRecord</span><span class="o">::</span><span class="no">Coders</span><span class="o">::</span><span class="no">Hstore</span><span class="o">.</span><span class="n">new</span><span class="p">({})</span>
-<span class="k">end</span>
-</pre></div>
-
 <p>This way, you will automatically start with an empty hash that you can write attributes to.</p>
 
 <pre><code>irb(main):001:0&gt; person = Person.new
 =&gt; #&lt;Person id: nil, name: nil, data: {}, created_at: nil, updated_at: nil&gt;
 irb(main):002:0&gt; person.data['favorite_color'] = 'blue'
 =&gt; "blue"
-</code></pre>
-
-<p>If you skip this step, you will have to manually initialize the value to an empty hash before
-writing to the attribute, or else you will get an error:</p>
-
-<pre><code>NoMethodError: undefined method `[]=' for nil:NilClass
 </code></pre>
 
 <h3>Querying the database</h3>
