@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
   s.required_ruby_version     = ">= 1.8.7"
   s.required_rubygems_version = ">= 1.3.6"
 
-  s.add_dependency "rails", ">= 3.1"
+  s.add_dependency "activerecord", ">= 3.1"
   s.add_dependency "rake"
   s.add_dependency 'pg-hstore', '>=1.1.5'
   s.add_development_dependency "bundler"
