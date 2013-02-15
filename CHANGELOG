@@ -1,8 +1,20 @@
+0.7.5 / 2013-02-14
+
+* Bug fixes
+
+  * Fixed problem while dumping hstore fields to schema.rb
+
+0.7.4 / 2013-02-11
+
+* Enhancements
+
+  * Replaced Rails dependency with ActiveRecord
+
 0.7.3 / 2013-02-07
 
 * Enhancements
-  * Always use empty hash as default value
 
+  * Always use empty hash as default value
 
 0.7.2 / 2013-02-07
 
