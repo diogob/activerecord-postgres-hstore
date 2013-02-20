@@ -66,22 +66,44 @@ module ActiveRecord
     end
   end
 
+
   module ConnectionAdapters
-    class PostgreSQLColumn < Column
-      # Adds the hstore type for the column.
-      def simplified_type_with_hstore(field_type)
-        field_type == 'hstore' ? :hstore : simplified_type_without_hstore(field_type)
+    #I believe this change will break the ability to do a schema dump as per issue #83
+    #https://github.com/engageis/activerecord-postgres-hstore/commit/ca34391c776949c13d561870067ddf581f0561b9#lib/activerecord-postgres-hstore/activerecord.rb
+    if(RUBY_PLATFORM != 'java')
+      class PostgreSQLColumn < Column
+        # Adds the hstore type for the column.
+        def simplified_type_with_hstore(field_type)
+          field_type == 'hstore' ? :hstore : simplified_type_without_hstore(field_type)
+        end
+
+        alias_method_chain :simplified_type, :hstore
       end
 
-      alias_method_chain :simplified_type, :hstore
-    end
+      class PostgreSQLAdapter < AbstractAdapter
+        def native_database_types_with_hstore
+          native_database_types_without_hstore.merge({:hstore => { :name => "hstore" }})
+        end
 
-    class PostgreSQLAdapter < AbstractAdapter
-      def native_database_types_with_hstore
-        native_database_types_without_hstore.merge({:hstore => { :name => "hstore" }})
+        alias_method_chain :native_database_types, :hstore
+      end
+    else
+      class PostgreSQLColumn
+        # Adds the hstore type for the column.
+        def simplified_type_with_hstore(field_type)
+          field_type == 'hstore' ? :hstore : simplified_type_without_hstore(field_type)
+        end
+
+        alias_method_chain :simplified_type, :hstore
       end
 
-      alias_method_chain :native_database_types, :hstore
+      class PostgreSQLAdapter
+        def native_database_types_with_hstore
+          native_database_types_without_hstore.merge({:hstore => { :name => "hstore" }})
+        end
+
+        alias_method_chain :native_database_types, :hstore
+      end
     end
 
     module SchemaStatements
