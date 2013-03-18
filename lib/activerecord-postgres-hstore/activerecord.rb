@@ -110,8 +110,8 @@ module ActiveRecord
       # See http://www.postgresql.org/docs/9.2/static/textsearch-indexes.html for more information.
       #
       def add_hstore_index(table_name, column_name, options = {})
-        index_name, index_type, index_columns = add_index_options(table_name, column_name, options)
-        index_type = index_type.present? ? index_type : 'gist'
+        index_name, uniq_index, index_columns = add_index_options(table_name, column_name, options)
+        index_type = options[:type].present? ? index_type : 'gist'
         execute "CREATE INDEX #{index_name} ON #{table_name} USING #{index_type}(#{column_name})"
       end
 
