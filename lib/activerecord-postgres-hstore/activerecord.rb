@@ -67,7 +67,25 @@ module ActiveRecord
   end
 
   module ConnectionAdapters
-    class PostgreSQLColumn < Column
+
+    def self.Column
+      if const_defined?('JdbcColumn')
+        const_get('JdbcColumn')
+      else
+        const_get('Column')
+      end
+    end
+
+    def self.Adapter
+      if const_defined?('JdbcAdapter')
+        const_get('JdbcAdapter')
+      else
+        const_get('AbstractAdapter')
+      end
+    end
+
+
+    class PostgreSQLColumn < Column()
       # Adds the hstore type for the column.
       def simplified_type_with_hstore(field_type)
         field_type == 'hstore' ? :hstore : simplified_type_without_hstore(field_type)
@@ -76,7 +94,7 @@ module ActiveRecord
       alias_method_chain :simplified_type, :hstore
     end
 
-    class PostgreSQLAdapter < AbstractAdapter
+    class PostgreSQLAdapter < Adapter()
       def native_database_types_with_hstore
         native_database_types_without_hstore.merge({:hstore => { :name => "hstore" }})
       end
