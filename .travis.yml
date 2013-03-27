@@ -1,6 +1,15 @@
 language: ruby
 rvm:
   - 1.9.3
+  - jruby-19mode
+  - rbx-19mode
+  - ruby-head
+  - jruby-head
+
+# jruby-head sometimes breaks stuff, but it's passing at the moment
+#matrix:
+#  allow_failures:
+#    - rvm: jruby-head
 
 branches:
   only:
