@@ -124,10 +124,10 @@ module ActiveRecord
       # Adds a GiST or GIN index to a table which has an hstore column.
       #
       # Example:
-      #   add_hstore_index :people, :info, :type => :gin
+      #   add_hstore_index :people, :info, :gin
       #
       # Options:
-      #   :type  = :gist (default) or :gin
+      #   :gist (default) or :gin
       #
       # See http://www.postgresql.org/docs/9.2/static/textsearch-indexes.html for more information.
       #
