@@ -73,6 +73,8 @@ For the model Person we could create an index (defaults to type GIST) over the d
 class AddIndexToPeople < ActiveRecord::Migration
   def change
     add_hstore_index :people, :data
+    # add_hstore_index :people, :data, :gist
+    # add_hstore_index :people, :data, :gin
   end 
 end
 ```
