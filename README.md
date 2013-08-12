@@ -100,7 +100,9 @@ look at [PostgreSQL docs](http://www.postgresql.org/docs/9.2/static/textsearch-i
 This gem only provides a custom serialization coder.
 If you want to use it just put in your Gemfile:
 
-    gem 'activerecord-postgres-hstore'
+```ruby
+gem 'activerecord-postgres-hstore'
+```
 
 Now add a line (for each hstore column) on the model you have your hstore columns.
 Assuming a model called **Person**, with a **data** field on it, the
@@ -114,10 +116,12 @@ end
 
 This way, you will automatically start with an empty hash that you can write attributes to.
 
-    irb(main):001:0> person = Person.new
-    => #<Person id: nil, name: nil, data: {}, created_at: nil, updated_at: nil>
-    irb(main):002:0> person.data['favorite_color'] = 'blue'
-    => "blue"
+```ruby
+irb(main):001:0> person = Person.new
+=> #<Person id: nil, name: nil, data: {}, created_at: nil, updated_at: nil>
+irb(main):002:0> person.data['favorite_color'] = 'blue'
+=> "blue"
+```
 
 ###Querying the database
 
@@ -125,48 +129,70 @@ Now you just need to learn a little bit of new
 sqls for selecting stuff (creating and updating is transparent).
 Find records that contains a key named 'foo’:
 
-    Person.where("data ? 'foo'")
+```ruby
+Person.where("data ? 'foo'")
+```
 
 Find records where 'foo’ is equal to 'bar’:
 
-    Person.where("data -> 'foo' = 'bar'")
+```ruby
+Person.where("data -> 'foo' = 'bar'")
+```
 
 This same sql is at least twice as fast (using indexes) if you do it
 that way:
 
-    Person.where("data @> 'foo=>bar'")
+```ruby
+Person.where("data @> 'foo=>bar'")
+```
 
 Find records where 'foo’ is not equal to 'bar’:
 
-    Person.where("data -> 'foo' <> 'bar'")
+```ruby
+Person.where("data -> 'foo' <> 'bar'")
+```
 
 Find records where 'foo’ is like 'bar’:
 
-    Person.where("data -> 'foo' LIKE '%bar%'")
+```ruby
+Person.where("data -> 'foo' LIKE '%bar%'")
+```
 
 If you need to delete a key in a record, you can do it that way:
 
-    person.destroy_key(:data, :foo)
+```ruby
+person.destroy_key(:data, :foo)
+```
 
 This way you’ll also save the record:
 
-    person.destroy_key!(:data, :foo)
+```ruby
+person.destroy_key!(:data, :foo)
+```
 
 The destroy\_key method returns 'self’, so you can chain it:
 
-    person.destroy_key(:data, :foo).destroy_key(:data, :bar).save
+```ruby
+person.destroy_key(:data, :foo).destroy_key(:data, :bar).save
+```
 
 But there is a shortcuts for that:
 
-   person.destroy_keys(:data, :foo, :bar)
+```ruby
+person.destroy_keys(:data, :foo, :bar)
+```
 
 And finally, if you need to delete keys in many rows, you can:
 
-    Person.delete_key(:data, :foo)
+```ruby
+Person.delete_key(:data, :foo)
+```
 
 and with many keys:
 
-    Person.delete_keys(:data, :foo, :bar)
+```ruby
+Person.delete_keys(:data, :foo, :bar)
+```
 
 ##Caveats
 
@@ -174,12 +200,16 @@ hstore keys and values have to be strings. This means `true` will become `"true"
 
 It is also confusing when querying:
 
-    Person.where("data -> 'foo' = :value", value: true).to_sql
-    #=> SELECT "people".* FROM "people" WHERE ("data -> 'foo' = 't'") # notice 't'
+```ruby
+Person.where("data -> 'foo' = :value", value: true).to_sql
+#=> SELECT "people".* FROM "people" WHERE ("data -> 'foo' = 't'") # notice 't'
+```
 
 To avoid the above, make sure all named parameters are strings:
 
-    Person.where("data -> 'foo' = :value", value: some_var.to_s)
+```ruby
+Person.where("data -> 'foo' = :value", value: some_var.to_s)
+```
 
 Have fun.
 
@@ -193,7 +223,9 @@ in database.yml to that database.
 
 The second option is to uncomment or add the following line in config/application.rb
 
-    config.active_record.schema_format = :sql
+```ruby
+config.active_record.schema_format = :sql
+```
 
 This will change your schema dumps from Ruby to SQL. If you're
 unsure about the implications of this change, we suggest reading this
