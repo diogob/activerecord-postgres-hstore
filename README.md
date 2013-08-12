@@ -1,10 +1,25 @@
-#Goodbye serialize, hello hstore. [![Build Status](https://secure.travis-ci.org/engageis/activerecord-postgres-hstore.png?branch=master)](http://travis-ci.org/engageis/activerecord-postgres-hstore)
+#Goodbye serialize, hello hstore.
+
+[![Build Status](https://secure.travis-ci.org/engageis/activerecord-postgres-hstore.png?branch=master)](http://travis-ci.org/engageis/activerecord-postgres-hstore)
+[![Code Climate](https://codeclimate.com/github/diogob/activerecord-postgres-hstore.png)](https://codeclimate.com/github/diogob/activerecord-postgres-hstore)
 
 You need dynamic columns in your tables. What do you do?
 
 * Create lots of tables to handle it. Nice, now you’ll need more models and lots of additional sqls. Insertion and selection will be slow as hell.
 * Use a noSQL database just for this issue. Good luck.
 * Create a serialized column. Nice, insertion will be fine, and reading data from a record too. But, what if you have a condition in your select that includes serialized data? Yeah, regular expressions.
+
+##Common use cases
+
+Add settings to users, like in rails-settings or HasEasy.
+
+```ruby
+class User < ActiveRecord::Base
+  serialize :settings, ActiveRecord::Coders::Hstore
+end
+user = User.create settings: {theme: 'navy'}
+user.settings['theme']
+```
 
 ##Note about 0.7
 
@@ -62,7 +77,7 @@ Well, not yet. Don’t forget to add indexes. Like this:
 CREATE INDEX people_gist_data ON people USING GIST(data);
 ```
 or
-```sql 
+```sql
 CREATE INDEX people_gin_data ON people USING GIN(data);
 ```
 
@@ -73,7 +88,7 @@ For the model Person we could create an index (defaults to type GIST) over the d
 class AddIndexToPeople < ActiveRecord::Migration
   def change
     add_hstore_index :people, :data
-  end 
+  end
 end
 ```
 
