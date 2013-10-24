@@ -216,7 +216,7 @@ Have fun.
 ##Test Database
 
 To have hstore enabled when you load your database schema (as happens in rake db:test:prepare), you
-have two options.
+have three options.
 
 The first option is creating a template database with hstore installed and set the template option
 in database.yml to that database.
@@ -230,6 +230,20 @@ config.active_record.schema_format = :sql
 This will change your schema dumps from Ruby to SQL. If you're
 unsure about the implications of this change, we suggest reading this
 [Rails Guide](http://guides.rubyonrails.org/migrations.html#schema-dumping-and-you).
+
+The third option would be to setup Postgres to create databases with hstore extension by default:
+
+```
+psql -d template0 -c 'create extension hstore;'
+```
+
+or
+
+```
+psql -d template1 -c 'create extension hstore;'
+```
+
+Reading this [Stackoverflow](http://stackoverflow.com/questions/12540865/error-with-rails-test-database-using-postgres-using-hstore) might provide more clarifications.
 
 ##Help
 
