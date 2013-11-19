@@ -219,7 +219,13 @@ To have hstore enabled when you load your database schema (as happens in rake db
 have two options.
 
 The first option is creating a template database with hstore installed and set the template option
-in database.yml to that database.
+in database.yml to that database. If you use the template1 database for this you don't even need to
+set the template option, but the extension will be installed in all your databases from now on 
+by default. To install the extension in your template1 database you could simply run:
+
+```ruby
+psql -d template1 -c 'create extension hstore;'
+```
 
 The second option is to uncomment or add the following line in config/application.rb
 
