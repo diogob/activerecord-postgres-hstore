@@ -9,6 +9,9 @@ require 'rails/generators/migration'
 # * Initialize ActiveRecord properly
 # * Add hstore:setup generator
 class Hstore < Rails::Railtie
+  rake_tasks do
+    load "tasks/hstore.rake"
+  end
 
   initializer 'activerecord-postgres-hstore' do
     ActiveSupport.on_load :active_record do
