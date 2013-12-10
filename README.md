@@ -21,6 +21,12 @@ user = User.create settings: {theme: 'navy'}
 user.settings['theme']
 ```
 
+##Note about Rails 4
+
+If you are using Rails 4 you don't need this gem as ActiveRecord 4 provides HStore type support out of the box.
+
+For more information take a look [here](http://mikecoutermarsh.com/2013/09/22/using-hstore-with-rails-4/)
+
 ##Note about 0.7
 
 I have decided to clean up the old code and provide only a custom serializer in this new version.
