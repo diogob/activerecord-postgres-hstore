@@ -181,4 +181,21 @@ module ActiveRecord
 
     end
   end
+
+  class Migration
+    class CommandRecorder
+      [:add_hstore_index, :remove_hstore_index].each do |method|
+        class_eval <<-EOV, __FILE__, __LINE__ + 1
+          def #{method}(*args)          # def create_table(*args)
+            record(:"#{method}", args)  #   record(:create_table, args)
+          end                           # end
+        EOV
+      end
+
+      private
+      def invert_add_hstore_index(args)
+        [:remove_hstore_index, args.first(2)]
+      end
+    end
+  end
 end
