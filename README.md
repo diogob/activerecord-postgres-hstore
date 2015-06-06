@@ -1,7 +1,7 @@
 #Goodbye serialize, hello hstore.
 
-[![Build Status](https://secure.travis-ci.org/diogob/activerecord-postgres-hstore.png?branch=master)](http://travis-ci.org/diogob/activerecord-postgres-hstore)
-[![Code Climate](https://codeclimate.com/github/diogob/activerecord-postgres-hstore.png)](https://codeclimate.com/github/diogob/activerecord-postgres-hstore)
+[![Build Status](https://secure.travis-ci.org/diogob/activerecord-postgres-hstore.svg?branch=master)](http://travis-ci.org/diogob/activerecord-postgres-hstore)
+[![Code Climate](https://codeclimate.com/github/diogob/activerecord-postgres-hstore.svg)](https://codeclimate.com/github/diogob/activerecord-postgres-hstore)
 
 You need dynamic columns in your tables. What do you do?
 
@@ -25,7 +25,41 @@ user.settings['theme']
 
 If you are using Rails 4 you don't need this gem as ActiveRecord 4 provides HStore type support out of the box.
 
-For more information take a look [here](http://mikecoutermarsh.com/2013/09/22/using-hstore-with-rails-4/)
+You can test it with a migration like this:
+```ruby
+class CreateTest < ActiveRecord::Migration
+  def change
+    create_table :tests do |t|
+      t.hstore :data
+    end
+  end
+end
+```
+
+Its model:
+```ruby
+class Test < ActiveRecord::Base
+end
+```
+
+Then you can use the hash field straight away:
+```ruby
+irb(main):003:0> t = Test.new data: {a: 1, b:2}
+=> #<Test id: nil, data: {"a"=>"1", "b"=>"2"}>
+irb(main):004:0> t.save!
+   (0.3ms)  BEGIN
+  SQL (2.3ms)  INSERT INTO "tests" ("data") VALUES ($1) RETURNING "id"  [["data", "\"a\"=>\"1\",\"b\"=>\"2\""]]
+   (0.5ms)  COMMIT
+=> true
+irb(main):005:0> t
+=> #<Test id: 1, data: {"a"=>"1", "b"=>"2"}>
+irb(main):006:0> t.data
+=> {"a"=>"1", "b"=>"2"}
+irb(main):007:0> t.data['a']
+=> "1"
+```
+
+For more information take a look [here](http://jes.al/2013/11/using-postgres-hstore-rails4/)
 
 ##Note about 0.7
 
