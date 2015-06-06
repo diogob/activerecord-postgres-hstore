@@ -23,7 +23,7 @@ user.settings['theme']
 
 ##Note about Rails 4
 
-If you are using Rails 4 you don't need this gem as ActiveRecord 4 provides HStore type support out of the box.
+If you are using Rails 4 you don't need this gem as ActiveRecord 4 provides HStore type support out of the box.  ActiveRecord will see your HStore column and do all of the work for you.  **Additional code is no longer needed.**
 
 You can test it with a migration like this:
 ```ruby
@@ -38,7 +38,9 @@ end
 
 Its model:
 ```ruby
-class Test < ActiveRecord::Base
+class Test < ActiveRecord::
+  # before Rails 4, we'd have to this here:
+  # serialize :data, ActiveRecord::Coders::Hstore
 end
 ```
 
