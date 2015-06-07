@@ -38,7 +38,7 @@ end
 
 Its model:
 ```ruby
-class Test < ActiveRecord::
+class Test < ActiveRecord::Base
   # before Rails 4, we'd have to this here:
   # serialize :data, ActiveRecord::Coders::Hstore
 end
