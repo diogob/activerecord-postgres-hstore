@@ -4,7 +4,7 @@ $:.unshift lib unless $:.include?(lib)
 
 Gem::Specification.new do |s|
   s.name = "activerecord-postgres-hstore"
-  s.version = "0.7.7"
+  s.version = "0.7.8"
 
   s.platform    = Gem::Platform::RUBY
   s.license     = "MIT"
