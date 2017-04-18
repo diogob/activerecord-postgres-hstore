@@ -1,4 +1,4 @@
-#Goodbye serialize, hello hstore.
+# Goodbye serialize, hello hstore.
 
 [![Build Status](https://secure.travis-ci.org/diogob/activerecord-postgres-hstore.svg?branch=master)](http://travis-ci.org/diogob/activerecord-postgres-hstore)
 [![Code Climate](https://codeclimate.com/github/diogob/activerecord-postgres-hstore.svg)](https://codeclimate.com/github/diogob/activerecord-postgres-hstore)
@@ -9,7 +9,7 @@ You need dynamic columns in your tables. What do you do?
 * Use a noSQL database just for this issue. Good luck.
 * Create a serialized column. Nice, insertion will be fine, and reading data from a record too. But, what if you have a condition in your select that includes serialized data? Yeah, regular expressions.
 
-##Common use cases
+## Common use cases
 
 Add settings to users, like in rails-settings or HasEasy.
 
@@ -21,7 +21,7 @@ user = User.create settings: {theme: 'navy'}
 user.settings['theme']
 ```
 
-##Note about Rails 4
+## Note about Rails 4
 
 If you are using Rails 4 you don't need this gem as ActiveRecord 4 provides HStore type support out of the box.  ActiveRecord will see your HStore column and do all of the work for you.  **Additional code is no longer needed.**
 
@@ -63,7 +63,7 @@ irb(main):007:0> t.data['a']
 
 For more information take a look [here](http://jes.al/2013/11/using-postgres-hstore-rails4/)
 
-##Note about 0.7
+## Note about 0.7
 
 I have decided to clean up the old code and provide only a custom serializer in this new version.
 
@@ -74,7 +74,7 @@ This monkey patches provided methods such as Hash\#to\_hstore and String\#from\_
 
 **If you rely on this feature please stick to 0.6 version** and there is still a branch named 0.6 to which you can submit your pull requests.
 
-##Requirements
+## Requirements
 
 Postgresql 8.4+ with contrib and Rails 3.1+ (If you want to try on older rails versions I recommend the 0.6 and ealier versions of this gem)
 On Ubuntu, this is easy: `sudo apt-get install postgresql-contrib-9.1`
@@ -85,7 +85,7 @@ On Mac you have a couple of options:
 * [Homebrew’s](https://github.com/mxcl/homebrew) Postgres installation also includes the contrib packages: `brew install postgres`
 * [Postgres.app](http://postgresapp.com/)
 
-##Install
+## Install
 
 
 Hstore is a PostgreSQL contrib type, [check it out first](http://www.postgresql.org/docs/9.2/static/hstore.html).
@@ -137,7 +137,7 @@ end
 To understand the difference between the two types of indexes take a
 look at [PostgreSQL docs](http://www.postgresql.org/docs/9.2/static/textsearch-indexes.html).
 
-##Usage
+## Usage
 
 This gem only provides a custom serialization coder.
 If you want to use it just put in your Gemfile:
@@ -165,7 +165,7 @@ irb(main):002:0> person.data['favorite_color'] = 'blue'
 => "blue"
 ```
 
-###Querying the database
+### Querying the database
 
 Now you just need to learn a little bit of new
 sqls for selecting stuff (creating and updating is transparent).
@@ -236,7 +236,7 @@ and with many keys:
 Person.delete_keys(:data, :foo, :bar)
 ```
 
-##Caveats
+## Caveats
 
 hstore keys and values have to be strings. This means `true` will become `"true"` and `42` will become `"42"` after you save the record. Only `nil` values are preserved.
 
@@ -255,7 +255,7 @@ Person.where("data -> 'foo' = :value", value: some_var.to_s)
 
 Have fun.
 
-##Test Database
+## Test Database
 
 To have hstore enabled when you load your database schema (as happens in rake db:test:prepare), you
 have two options.
@@ -279,12 +279,12 @@ This will change your schema dumps from Ruby to SQL. If you're
 unsure about the implications of this change, we suggest reading this
 [Rails Guide](http://guides.rubyonrails.org/migrations.html#schema-dumping-and-you).
 
-##Help
+## Help
 
 You can use issues in github for that. Or else you can reach us at
 twitter: [@dbiazus](https://twitter.com/#!/dbiazus) or [@joaomilho](https://twitter.com/#!/joaomilho)
 
-##Note on Patches/Pull Requests
+## Note on Patches/Pull Requests
 
 
 * Fork the project.
@@ -293,6 +293,6 @@ twitter: [@dbiazus](https://twitter.com/#!/dbiazus) or [@joaomilho](https://twit
 * Commit, do not mess with rakefile, version, or history.  (if you want to have your own version, that is fine but bump version in a commit by itself I can ignore when I pull)
 * Send me a pull request. Bonus points for topic branches.
 
-##Copyright
+## Copyright
 
 Copyright © 2010 Juan Maiz. See LICENSE for details.
