@@ -7,9 +7,10 @@ rvm:
   - jruby-head
 
 # jruby-head sometimes breaks stuff, but it's passing at the moment
-#matrix:
-#  allow_failures:
-#    - rvm: jruby-head
+matrix:
+  allow_failures:
+    - rvm: jruby-head
+    - rvm: rbx-2
 
 branches:
   only:
